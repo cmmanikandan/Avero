@@ -156,7 +156,7 @@ export default function LoginPage() {
       const from = location.state?.from || '/';
       navigate(from, { replace: true });
     } catch (err) {
-      showToast('Google Sign-In failed', 'error');
+      showToast(err.message || 'Google Sign-In failed', 'error');
     } finally {
       setIsLoading(false);
     }

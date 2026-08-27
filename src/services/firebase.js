@@ -53,15 +53,23 @@ export const firebaseAuthService = {
       };
     } catch (error) {
       console.error('[Firebase Auth] Google Sign-In Error:', error);
-      // If popup is closed by user or cancelled, throw descriptive error
       if (error.code === 'auth/popup-closed-by-user') {
         throw new Error('Google Sign-In popup was closed before completing.');
       } else if (error.code === 'auth/cancelled-popup-request') {
         throw new Error('Google Sign-In request was cancelled.');
       } else if (error.code === 'auth/popup-blocked') {
         throw new Error('Google popup was blocked by your browser. Please allow popups.');
+      } else if (error.code === 'auth/unauthorized-domain') {
+        const domain = typeof window !== 'undefined' ? window.location.hostname : 'your deployed domain';
+        throw new Error(`Domain "${domain}" is not authorized. Add "${domain}" in Firebase Console > Authentication > Settings > Authorized domains.`);
+      } else if (error.code === 'auth/operation-not-allowed') {
+        throw new Error('Google Sign-In is not enabled in your Firebase project. Enable "Google" under Firebase Console > Authentication > Sign-in method.');
+      } else if (error.code === 'auth/invalid-api-key' || error.code === 'auth/api-key-not-valid' || error.code === 'auth/configuration-not-found') {
+        throw new Error('Firebase environment variables (VITE_FIREBASE_API_KEY, etc.) are missing or invalid in your deployment settings.');
+      } else if (error.code === 'auth/network-request-failed') {
+        throw new Error('Network error during Google Sign-In. Please check your internet connection and try again.');
       }
-      throw error;
+      throw new Error(error.message || 'Google Sign-In failed. Please check your Firebase configuration.');
     }
   },
 
