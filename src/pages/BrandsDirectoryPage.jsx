@@ -2,7 +2,6 @@ import React, { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { BRAND_DIRECTORY } from '../data/mockBrands';
-import { PRODUCTS } from '../data/products';
 import {
   Store,
   Sparkles,

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { PRODUCTS } from '../../data/products';
 import { useApp } from '../../context/AppContext';
 import {
   ShieldAlert,

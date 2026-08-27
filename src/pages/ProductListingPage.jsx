@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { PRODUCTS } from '../data/products';
 import { CATEGORIES } from '../data/categories';
 import ProductCard from '../components/product/ProductCard';
 import FilterSidebar from '../components/filter/FilterSidebar';
@@ -23,8 +22,8 @@ export default function ProductListingPage() {
   const searchParam = searchParams.get('q') || '';
   const initialSort = searchParams.get('sort') || 'popularity';
 
-  const { products } = useApp();
-  const liveCatalog = products && products.length > 0 ? products : PRODUCTS;
+  const { products = [] } = useApp();
+  const liveCatalog = products;
 
   const [activeFilters, setActiveFilters] = useState({
     minRating: searchParams.get('rating') ? Number(searchParams.get('rating')) : null,
@@ -58,31 +57,34 @@ export default function ProductListingPage() {
 
   const handleRemoveSingleFilter = (key, option = null) => {
     setActiveFilters(prev => {
-      if (option && Array.isArray(prev[key])) {
-        const nextArr = prev[key].filter(item => item !== option);
-        return { ...prev, [key]: nextArr };
+      if (key === 'brand' && option) {
+        return {
+          ...prev,
+          brand: prev.brand.filter(b => b !== option)
+        };
       }
-      const updated = { ...prev };
-      delete updated[key];
-      return updated;
+      return {
+        ...prev,
+        [key]: Array.isArray(prev[key]) ? [] : null
+      };
     });
   };
 
-  // Multi-Token Search & Intelligent Ranking Engine
+  // ─── Intelligent Catalog Pipeline ─────────────────────────────────────────
   const { results: filteredProducts, relatedProducts, relatedHeading, isFallback, fallbackMessage } = useMemo(() => {
     const applyFilters = (p) => {
       if (activeFilters.assured && !p.assured) return false;
+      if (activeFilters.freeDelivery && !p.freeDelivery) return false;
       if (activeFilters.minRating && p.rating < activeFilters.minRating) return false;
       if (activeFilters.minDiscount && p.discount < activeFilters.minDiscount) return false;
-      if (activeFilters.freeDelivery && !p.freeDelivery) return false;
       if (activeFilters.brand && activeFilters.brand.length > 0 && !activeFilters.brand.includes(p.brand)) return false;
 
-      for (const key of Object.keys(activeFilters)) {
-        if (['minRating', 'minDiscount', 'assured', 'freeDelivery', 'brand'].includes(key)) continue;
-        const filterVals = activeFilters[key];
-        if (Array.isArray(filterVals) && filterVals.length > 0) {
-          const productAttrVal = p.attributes?.[key];
-          if (!productAttrVal || !filterVals.includes(productAttrVal)) return false;
+      // Dynamic custom filters
+      for (const [key, val] of Object.entries(activeFilters)) {
+        if (['assured', 'minRating', 'minDiscount', 'freeDelivery', 'brand'].includes(key)) continue;
+        if (val && Array.isArray(val) && val.length > 0) {
+          const productAttrVal = p.attributes?.[key] || p[key];
+          if (!productAttrVal || !val.includes(productAttrVal)) return false;
         }
       }
       return true;
@@ -96,7 +98,7 @@ export default function ProductListingPage() {
       return (b.ratingsCount || 0) - (a.ratingsCount || 0); // popularity
     };
 
-    // 1. Search Query Flow (e.g. "apple mobiles", "iphone", "nike shoes")
+    // 1. Search Query Flow (e.g. "mobiles", "audio", "footwear")
     if (searchParam) {
       const query = searchParam.toLowerCase().trim();
       const tokens = query.split(/\s+/).filter(Boolean);
@@ -109,11 +111,9 @@ export default function ProductListingPage() {
       }).sort(sortFn);
 
       if (exactMatches.length > 0) {
-        // Find category of the exact matches (e.g. mobiles)
         const primaryCat = exactMatches[0]?.category;
         const exactIds = new Set(exactMatches.map(p => p.id));
 
-        // Related matches from same category or matching ANY token
         const related = liveCatalog.filter(p => {
           if (exactIds.has(p.id)) return false;
           if (primaryCat && p.category === primaryCat) return true;
@@ -148,6 +148,8 @@ export default function ProductListingPage() {
           fallbackMessage: `Showing best matching results for "${searchParam}":`
         };
       }
+
+      return { results: [], relatedProducts: [], relatedHeading: '', isFallback: false, fallbackMessage: '' };
     }
 
     // 2. Category Browse Flow
@@ -160,14 +162,12 @@ export default function ProductListingPage() {
       return { results: matched, relatedProducts: [], relatedHeading: '', isFallback: false, fallbackMessage: '' };
     }
 
-    // 3. Fallback to top recommendations
-    const trendingPicks = liveCatalog.filter(p => p.rating >= 4.4 || p.assured).slice(0, 8);
     return {
-      results: trendingPicks,
+      results: [],
       relatedProducts: [],
       relatedHeading: '',
-      isFallback: true,
-      fallbackMessage: 'Showing top recommended products for you:'
+      isFallback: false,
+      fallbackMessage: ''
     };
   }, [liveCatalog, categoryParam, searchParam, activeFilters, sortBy]);
 

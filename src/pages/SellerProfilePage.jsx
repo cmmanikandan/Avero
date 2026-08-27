@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { PRODUCTS } from '../data/products';
+import { useApp } from '../context/AppContext';
 import { MOCK_SELLER } from '../data/mockSellers';
 import ProductCard from '../components/product/ProductCard';
 import {
@@ -20,18 +20,19 @@ import {
 export default function SellerProfilePage() {
   const { sellerId } = useParams();
   const navigate = useNavigate();
+  const { products = [] } = useApp();
 
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Find products associated with this seller or default
+  // Find products associated with this seller
   const sellerProducts = useMemo(() => {
-    return PRODUCTS.filter((p) => {
-      if (sellerId && (sellerId.includes('supercom') || sellerId.includes('01'))) {
-        return p.seller?.name?.toLowerCase().includes('supercom') || p.seller?.name?.toLowerCase().includes('avero') || true;
-      }
-      return true;
+    return products.filter((p) => {
+      if (!sellerId) return true;
+      const sLower = (p.seller?.name || p.seller?.id || '').toLowerCase();
+      const target = sellerId.toLowerCase();
+      return sLower.includes(target) || target.includes(sLower);
     });
-  }, [sellerId]);
+  }, [sellerId, products]);
 
   const filteredProducts = useMemo(() => {
     if (!searchQuery.trim()) return sellerProducts;

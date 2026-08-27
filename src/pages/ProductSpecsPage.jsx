@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { PRODUCTS } from '../data/products';
 import {
   ArrowLeft,
   Search,
@@ -19,7 +18,7 @@ export default function ProductSpecsPage() {
   const navigate = useNavigate();
   const { products = [] } = useApp();
 
-  const allAvailable = products.length > 0 ? products : PRODUCTS;
+  const allAvailable = products;
   const product = allAvailable.find((p) => String(p.id) === String(id)) || null;
 
   const [searchQuery, setSearchQuery] = useState('');

@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { PRODUCTS } from '../data/products';
 import ProductCard from '../components/product/ProductCard';
 import { ArrowLeft, ArrowUpDown, Filter, Package } from 'lucide-react';
 
@@ -10,7 +9,7 @@ export default function SimilarProductsPage() {
   const navigate = useNavigate();
   const { products = [] } = useApp();
 
-  const allAvailable = products.length > 0 ? products : PRODUCTS;
+  const allAvailable = products;
   const product = allAvailable.find((p) => String(p.id) === String(id)) || null;
 
   const [sortOption, setSortOption] = useState('POPULARITY');

@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { PRODUCTS } from '../data/products';
 import { INITIAL_ORDERS } from '../data/mockOrders';
 import { AVAILABLE_COUPONS } from '../data/coupons';
 import { firebaseAuthService } from '../services/firebase';
@@ -169,25 +168,84 @@ export function AppProvider({ children }) {
     return [];
   });
 
-  // Live Marketplace Products & Seller Submissions
+  // Live Marketplace Products & Seller Submissions (Defaults to completely empty until seller/admin adds items)
   const [products, setProducts] = useState(() => {
-    const saved = localStorage.getItem('avero_marketplace_products');
-    if (saved) {
-      try {
+    try {
+      const saved = localStorage.getItem('avero_marketplace_products');
+      if (saved) {
         const parsed = JSON.parse(saved);
-        const nonMock = Array.isArray(parsed) ? parsed.filter(p => !p.id?.startsWith('prod-mob-') && !p.id?.startsWith('prod-aud-') && !p.id?.startsWith('prod-shoe-') && !p.id?.startsWith('prod-sam-') && !p.id?.startsWith('prod-asus-') && !p.id?.startsWith('prod-dell-') && !p.id?.startsWith('prod-lg-') && !p.id?.startsWith('prod-oneplus-') && !p.id?.startsWith('prod-puma-') && !p.id?.startsWith('prod-boat-') && !p.id?.startsWith('prod-home-') && !p.id?.startsWith('prod-acc-')) : [];
-        return nonMock;
-      } catch (e) {}
-    }
-    return PRODUCTS;
+        if (Array.isArray(parsed)) {
+          const nonMock = parsed.filter(p => 
+            p && p.id && 
+            !p.id.startsWith('prod-mob-') && 
+            !p.id.startsWith('prod-aud-') && 
+            !p.id.startsWith('prod-shoe-') && 
+            !p.id.startsWith('prod-sam-') && 
+            !p.id.startsWith('prod-asus-') && 
+            !p.id.startsWith('prod-dell-') && 
+            !p.id.startsWith('prod-lg-') && 
+            !p.id.startsWith('prod-oneplus-') && 
+            !p.id.startsWith('prod-puma-') && 
+            !p.id.startsWith('prod-boat-') && 
+            !p.id.startsWith('prod-home-') && 
+            !p.id.startsWith('prod-acc-')
+          );
+          return nonMock;
+        }
+      }
+    } catch (_) {}
+    return [];
   });
 
   // Sync live products, orders, delivery partners & campaigns from Supabase on mount
   useEffect(() => {
+    // Purge legacy demo caches from localStorage
+    try {
+      localStorage.removeItem('avero_supabase_products');
+      const saved = localStorage.getItem('avero_marketplace_products');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          const nonMock = parsed.filter(p => 
+            p && p.id && 
+            !p.id.startsWith('prod-mob-') && 
+            !p.id.startsWith('prod-aud-') && 
+            !p.id.startsWith('prod-shoe-') && 
+            !p.id.startsWith('prod-sam-') && 
+            !p.id.startsWith('prod-asus-') && 
+            !p.id.startsWith('prod-dell-') && 
+            !p.id.startsWith('prod-lg-') && 
+            !p.id.startsWith('prod-oneplus-') && 
+            !p.id.startsWith('prod-puma-') && 
+            !p.id.startsWith('prod-boat-') && 
+            !p.id.startsWith('prod-home-') && 
+            !p.id.startsWith('prod-acc-')
+          );
+          localStorage.setItem('avero_marketplace_products', JSON.stringify(nonMock));
+          setProducts(nonMock);
+        }
+      }
+    } catch (_) {}
+
     supabaseService.getProducts().then(liveProds => {
       if (liveProds && liveProds.length > 0) {
-        setProducts(liveProds);
-        localStorage.setItem('avero_marketplace_products', JSON.stringify(liveProds));
+        const nonMock = liveProds.filter(p => 
+          p && p.id && 
+          !p.id.startsWith('prod-mob-') && 
+          !p.id.startsWith('prod-aud-') && 
+          !p.id.startsWith('prod-shoe-') && 
+          !p.id.startsWith('prod-sam-') && 
+          !p.id.startsWith('prod-asus-') && 
+          !p.id.startsWith('prod-dell-') && 
+          !p.id.startsWith('prod-lg-') && 
+          !p.id.startsWith('prod-oneplus-') && 
+          !p.id.startsWith('prod-puma-') && 
+          !p.id.startsWith('prod-boat-') && 
+          !p.id.startsWith('prod-home-') && 
+          !p.id.startsWith('prod-acc-')
+        );
+        setProducts(nonMock);
+        localStorage.setItem('avero_marketplace_products', JSON.stringify(nonMock));
       }
     }).catch(console.warn);
 
@@ -1060,21 +1118,50 @@ export function AppProvider({ children }) {
     showToast(`Sponsored campaign "${campaign.name}" launched!`, 'success');
   };
 
+  // Seller Product Creation & Live Marketplace Publishing
+  const addProduct = (productData) => {
+    const newProduct = {
+      id: productData.id || `prod_${Date.now()}`,
+      ...productData,
+      isCustomCreated: true,
+      created_at: new Date().toISOString(),
+      status: 'APPROVED',
+      inStock: true,
+      assured: true,
+      rating: productData.rating || 5.0,
+      reviewsCount: productData.reviewsCount || 0,
+      ratingsCount: productData.ratingsCount || 0,
+      seller: {
+        name: user?.storeName || user?.name || 'Verified Merchant Partner',
+        rating: 5.0,
+        verified: true
+      }
+    };
+    setProducts(prev => {
+      const updated = [newProduct, ...prev.filter(p => p.id !== newProduct.id)];
+      localStorage.setItem('avero_marketplace_products', JSON.stringify(updated));
+      return updated;
+    });
+    setVendorSubmissions(prev => [newProduct, ...prev.filter(s => s.id !== newProduct.id)]);
+    supabaseService.createProduct(newProduct).catch(console.warn);
+    showToast(`🎉 Product "${newProduct.title.slice(0, 24)}..." is now live on the marketplace!`, 'success');
+    return newProduct;
+  };
+
+  const deleteProduct = (productId) => {
+    setProducts(prev => {
+      const updated = prev.filter(p => p.id !== productId);
+      localStorage.setItem('avero_marketplace_products', JSON.stringify(updated));
+      return updated;
+    });
+    setVendorSubmissions(prev => prev.filter(s => s.id !== productId));
+    supabaseService.deleteProduct(productId).catch(console.warn);
+    showToast('Product removed from marketplace catalog', 'info');
+  };
+
   // Seller Product Submission & Super Admin Quality Control Workflow
   const submitProductForReview = (productData) => {
-    const newSubmission = {
-      id: `SUB-${Math.floor(1000 + Math.random() * 9000)}`,
-      ...productData,
-      status: 'PENDING_APPROVAL',
-      submittedAt: 'Today',
-      rating: 4.9,
-      reviewsCount: 0,
-      ratingsCount: 0,
-      seller: { name: user?.name || 'Verified Vendor Direct' }
-    };
-    setVendorSubmissions(prev => [newSubmission, ...prev]);
-    showToast('Product submitted! Awaiting Super Admin quality review & catalog publishing.', 'success');
-    return newSubmission;
+    return addProduct(productData);
   };
 
   const approveProduct = (submissionId) => {
@@ -1083,14 +1170,14 @@ export function AppProvider({ children }) {
 
     const approvedProduct = {
       ...submission,
-      id: `prod-appr-${Date.now()}`,
+      id: submission.id || `prod-appr-${Date.now()}`,
       status: 'APPROVED',
       assured: true,
       inStock: true
     };
 
     setVendorSubmissions(prev => prev.map(s => s.id === submissionId ? { ...s, status: 'APPROVED' } : s));
-    setProducts(prev => [approvedProduct, ...prev]);
+    setProducts(prev => [approvedProduct, ...prev.filter(p => p.id !== approvedProduct.id)]);
     showToast(`"${submission.title.slice(0, 22)}..." approved and published live to customer marketplace!`, 'success');
   };
 
@@ -1195,6 +1282,9 @@ export function AppProvider({ children }) {
         sponsoredCampaigns,
         createAdCampaign,
         products,
+        setProducts,
+        addProduct,
+        deleteProduct,
         vendorSubmissions,
         submitProductForReview,
         approveProduct,

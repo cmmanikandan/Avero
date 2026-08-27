@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { PRODUCTS } from '../data/products';
 import { useApp } from '../context/AppContext';
 import ProductGallery from '../components/product/ProductGallery';
 import VariantSelector from '../components/product/VariantSelector';
@@ -37,7 +36,8 @@ import {
   Shield,
   Bell,
   Camera,
-  Scale
+  Scale,
+  Package
 } from 'lucide-react';
 
 export default function ProductDetailsPage() {
@@ -47,9 +47,9 @@ export default function ProductDetailsPage() {
   const [isPriceAlertOpen, setIsPriceAlertOpen] = useState(false);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
-  // Combine live catalog, vendor submissions, and static products
+  // Combine live catalog and vendor submissions
   const allAvailableProducts = useMemo(() => {
-    const combined = [...products, ...vendorSubmissions, ...PRODUCTS];
+    const combined = [...products, ...vendorSubmissions];
     const map = new Map();
     combined.forEach(p => {
       if (p && p.id && !map.has(String(p.id))) {
@@ -59,9 +59,9 @@ export default function ProductDetailsPage() {
     return Array.from(map.values());
   }, [products, vendorSubmissions]);
 
-  // Find exact product by id or fallback to title slug
+  // Find exact product by id or title slug
   const product = useMemo(() => {
-    if (!id) return allAvailableProducts[0];
+    if (!id) return null;
     const targetId = String(id).trim();
     
     // 1. Direct match by ID
@@ -74,7 +74,7 @@ export default function ProductDetailsPage() {
     );
     if (foundBySlug) return foundBySlug;
 
-    return allAvailableProducts[0];
+    return null;
   }, [id, allAvailableProducts]);
 
   // Variant Selection State

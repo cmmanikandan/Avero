@@ -3,37 +3,8 @@
  * Implements Market Basket Analysis: Support, Confidence, Lift, Conviction & Combo Ranking
  */
 
-import { PRODUCTS } from '../../data/products';
-
-// Mock transaction history dataset (1,200 simulated multi-item transactions)
-export const RAW_TRANSACTIONS = [
-  ['prod-sam-03', 'prod-sam-04', 'prod-acc-tv-01'],
-  ['prod-sam-03', 'prod-acc-tv-01'],
-  ['prod-sam-03', 'prod-acc-tv-02'],
-  ['prod-sam-03', 'prod-sam-04'],
-  ['prod-mob-01', 'prod-acc-01', 'prod-acc-02'],
-  ['prod-mob-01', 'prod-acc-01'],
-  ['prod-mob-01', 'prod-aud-01'],
-  ['prod-sam-01', 'prod-acc-01', 'prod-sam-04'],
-  ['prod-sam-01', 'prod-oneplus-03'],
-  ['prod-oneplus-01', 'prod-oneplus-03', 'prod-acc-01'],
-  ['prod-oneplus-01', 'prod-acc-01'],
-  ['prod-asus-01', 'prod-asus-02', 'prod-acc-lap-01'],
-  ['prod-asus-01', 'prod-acc-lap-01', 'prod-acc-lap-02'],
-  ['prod-nike-01', 'prod-acc-shoe-01', 'prod-acc-shoe-02'],
-  ['prod-nike-01', 'prod-acc-shoe-01'],
-  ['prod-nike-02', 'prod-acc-shoe-01', 'prod-acc-shoe-02'],
-  ['prod-home-01', 'prod-acc-kitchen-01', 'prod-groc-01'],
-  ['prod-home-01', 'prod-acc-kitchen-01'],
-  ['prod-sam-04', 'prod-acc-tv-01'],
-  ['prod-sam-04', 'prod-acc-tv-01', 'prod-sam-03'],
-  ['prod-lg-01', 'prod-sam-04', 'prod-acc-tv-01'],
-  ['prod-lg-01', 'prod-acc-tv-02'],
-  ['prod-dell-01', 'prod-acc-lap-01', 'prod-acc-lap-02'],
-  ['prod-boat-01', 'prod-mob-01'],
-  ['prod-puma-01', 'prod-acc-shoe-01', 'prod-acc-shoe-02'],
-  ['prod-adidas-01', 'prod-acc-shoe-01']
-];
+// Live transaction history dataset
+export const RAW_TRANSACTIONS = [];
 
 /**
  * Calculates Support, Confidence, and Lift for Itemsets
@@ -300,7 +271,7 @@ function buildComboResult(main, comp1, comp2, comp3, label1, label2, m1, m2) {
 /**
  * Mines Global Association Rules for Seller or Admin Hub
  */
-export function mineAssociationRules({ sellerId = null, allProducts = PRODUCTS, minSupport = 0.1, minConfidence = 0.5 } = {}) {
+export function mineAssociationRules({ sellerId = null, allProducts = [], minSupport = 0.1, minConfidence = 0.5 } = {}) {
   const scopedProducts = sellerId
     ? allProducts.filter(p => p.seller?.name?.toLowerCase().replace(/\s+/g, '-') === sellerId || p.seller?.id === sellerId)
     : allProducts;

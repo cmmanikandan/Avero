@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useLocation, Link, useNavigate } from 'react-router-dom';
 import confetti from 'canvas-confetti';
 import { useApp } from '../context/AppContext';
-import { PRODUCTS } from '../data/products';
 import { generateTaxInvoice } from '../services/invoiceGenerator';
 import ProductCard from '../components/product/ProductCard';
 import {

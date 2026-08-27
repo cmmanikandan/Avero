@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { PRODUCTS } from '../data/products';
 import { CATEGORIES } from '../data/categories';
 import { BRAND_DIRECTORY } from '../data/mockBrands';
 import ProductCard from '../components/product/ProductCard';
@@ -32,36 +31,36 @@ import {
 const HERO_SLIDES = [
   {
     id: 'hero-1',
-    tag: 'FLAGSHIP LAUNCH 2026',
-    title: 'Apple iPhone 15 Pro & M3 Max',
-    subtitle: 'Titanium design. A17 Pro chip. Pro camera system. Starting at ₹1,34,900 with No-Cost EMI.',
+    tag: 'NEXT-GEN HYPER-COMMERCE',
+    title: 'Discover Curated Marketplace Collections',
+    subtitle: 'High-converting discovery, sub-second search, and genuine certified products with express last-mile fulfillment.',
     accent: '#818CF8',
     bg: 'radial-gradient(ellipse at 80% 50%, rgba(99, 102, 241, 0.25), transparent 60%), #090D16',
-    link: '/products?category=mobiles',
-    img: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=700&q=80',
-    stat: 'Over 12,000+ Verified Reviews'
+    link: '/products',
+    img: 'https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=700&q=80',
+    stat: '100% Genuine Guaranteed'
   },
   {
     id: 'hero-2',
-    tag: 'STUDIO AUDIO & ANC',
-    title: 'Sony WH-1000XM5 & Bose Ultra',
-    subtitle: 'Industry-leading noise cancellation. 30-hour battery. Studio Hi-Res certified sound.',
+    tag: 'OFFICIAL BOUTIQUES',
+    title: 'Verified Brand Flagship Stores',
+    subtitle: 'Direct manufacturer warranties, authenticated serials, and dedicated brand support for top global labels.',
     accent: '#06B6D4',
     bg: 'radial-gradient(ellipse at 80% 50%, rgba(6, 182, 212, 0.25), transparent 60%), #090D16',
-    link: '/products?category=audio',
-    img: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=700&q=80',
-    stat: 'Special Flat ₹2,000 Voucher'
+    link: '/brands',
+    img: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=700&q=80',
+    stat: 'Direct Brand Fulfillment'
   },
   {
     id: 'hero-3',
-    tag: 'STREETWEAR & RUNNING',
-    title: 'Nike Air Zoom & Street Luxe',
-    subtitle: 'Engineered responsiveness and sculpted aesthetics for performance and lifestyle.',
+    tag: 'SCALE YOUR STORE',
+    title: 'Become an Avero Merchant Partner',
+    subtitle: 'Reach millions of buyers across India with zero onboarding friction, automated GST invoicing, and daily T+1 payouts.',
     accent: '#F43F5E',
     bg: 'radial-gradient(ellipse at 80% 50%, rgba(244, 63, 94, 0.25), transparent 60%), #090D16',
-    link: '/products?category=footwear',
-    img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=700&q=80',
-    stat: 'Up to 40% Off New Seasons'
+    link: '/seller',
+    img: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=700&q=80',
+    stat: 'Instant Onboarding & KYC'
   }
 ];
 
@@ -118,7 +117,7 @@ export default function HomePage() {
     return () => clearInterval(timer);
   }, []);
 
-  const allAvailable = products.length > 0 ? products : PRODUCTS;
+  const allAvailable = products;
 
   // Filter pools
   const flashDeals = allAvailable.slice(0, 4);
@@ -289,118 +288,125 @@ export default function HomePage() {
         {/* 3. ⚡ Dynamic Lightning Flash Drops Engine (Live Countdown + Stock Meter) */}
         <FlashDealsCarousel />
 
-        {/* 4. ✨ Recommended For You (AI-Personalized + Category Filter Tabs - 2x2 on Mobile) */}
-        <section className="home-section-container" style={{
-          backgroundColor: '#FFFFFF',
-          borderRadius: '24px',
-          border: '1px solid #E2E8F0',
-          padding: '24px',
-          boxShadow: '0 4px 20px rgba(15, 23, 42, 0.04)'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px', flexWrap: 'wrap', gap: '12px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '10px',
-                backgroundColor: '#EEF2FF',
-                color: '#4F46E5',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-                <Sparkles size={19} />
+        {/* 3. ⚡ Dynamic Lightning Flash Drops Engine */}
+        <FlashDealsCarousel />
+
+        {/* 4. ✨ Recommended For You */}
+        {recommendedProducts.length > 0 && (
+          <section className="home-section-container" style={{
+            backgroundColor: '#FFFFFF',
+            borderRadius: '24px',
+            border: '1px solid #E2E8F0',
+            padding: '24px',
+            boxShadow: '0 4px 20px rgba(15, 23, 42, 0.04)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px', flexWrap: 'wrap', gap: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '10px',
+                  backgroundColor: '#EEF2FF',
+                  color: '#4F46E5',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <Sparkles size={19} />
+                </div>
+                <div>
+                  <h2 style={{ fontSize: '17.5px', fontWeight: '800', color: '#0F172A', margin: 0 }}>
+                    Recommended For You
+                  </h2>
+                  <span style={{ fontSize: '11.5px', color: '#64748B' }}>
+                    AI tailored selections based on your browsing & cart preferences
+                  </span>
+                </div>
               </div>
-              <div>
-                <h2 style={{ fontSize: '17.5px', fontWeight: '800', color: '#0F172A', margin: 0 }}>
-                  Recommended For You
-                </h2>
-                <span style={{ fontSize: '11.5px', color: '#64748B' }}>
-                  AI tailored selections based on your browsing & cart preferences
-                </span>
+
+              {/* Category Filter Pills */}
+              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                {[
+                  { id: 'ALL', label: 'All Picks' },
+                  { id: 'mobiles', label: '📱 Mobiles' },
+                  { id: 'electronics', label: '💻 Electronics' },
+                  { id: 'footwear', label: '👟 Fashion' }
+                ].map(cat => (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => setRecCategory(cat.id)}
+                    style={{
+                      padding: '5px 12px',
+                      borderRadius: '20px',
+                      fontSize: '11.5px',
+                      fontWeight: recCategory === cat.id ? '800' : '600',
+                      backgroundColor: recCategory === cat.id ? '#4F46E5' : '#F1F5F9',
+                      color: recCategory === cat.id ? '#FFFFFF' : '#475569',
+                      border: 'none',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease'
+                    }}
+                  >
+                    {cat.label}
+                  </button>
+                ))}
               </div>
             </div>
 
-            {/* Category Filter Pills */}
-            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-              {[
-                { id: 'ALL', label: 'All Picks' },
-                { id: 'mobiles', label: '📱 Mobiles' },
-                { id: 'electronics', label: '💻 Electronics' },
-                { id: 'footwear', label: '👟 Fashion' }
-              ].map(cat => (
-                <button
-                  key={cat.id}
-                  type="button"
-                  onClick={() => setRecCategory(cat.id)}
-                  style={{
-                    padding: '5px 12px',
-                    borderRadius: '20px',
-                    fontSize: '11.5px',
-                    fontWeight: recCategory === cat.id ? '800' : '600',
-                    backgroundColor: recCategory === cat.id ? '#4F46E5' : '#F1F5F9',
-                    color: recCategory === cat.id ? '#FFFFFF' : '#475569',
-                    border: 'none',
-                    cursor: 'pointer',
-                    transition: 'all 0.15s ease'
-                  }}
-                >
-                  {cat.label}
-                </button>
+            <div className="home-2x2-grid">
+              {recommendedProducts.map((prod) => (
+                <ProductCard key={prod.id} product={prod} />
               ))}
             </div>
-          </div>
+          </section>
+        )}
 
-          <div className="home-2x2-grid">
-            {recommendedProducts.map((prod) => (
-              <ProductCard key={prod.id} product={prod} />
-            ))}
-          </div>
-        </section>
+        {/* 5. 🎯 Customer Preferences & Trending Now */}
+        {customerPreferences.length > 0 && (
+          <section className="home-section-container" style={{
+            backgroundColor: '#FFFFFF',
+            borderRadius: '24px',
+            border: '1px solid #E2E8F0',
+            padding: '24px',
+            boxShadow: '0 4px 20px rgba(15, 23, 42, 0.04)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px', flexWrap: 'wrap', gap: '10px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '10px',
+                  backgroundColor: '#ECFDF5',
+                  color: '#059669',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <HeartHandshake size={20} />
+                </div>
+                <div>
+                  <h2 style={{ fontSize: '17.5px', fontWeight: '800', color: '#0F172A', margin: 0 }}>
+                    Customer Preferences & Trends
+                  </h2>
+                  <span style={{ fontSize: '11.5px', color: '#64748B' }}>
+                    Most loved items with verified high buyer satisfaction
+                  </span>
+                </div>
+              </div>
 
-        {/* 5. 🎯 Customer Preferences & Trending Now (2x2 on Mobile) */}
-        <section className="home-section-container" style={{
-          backgroundColor: '#FFFFFF',
-          borderRadius: '24px',
-          border: '1px solid #E2E8F0',
-          padding: '24px',
-          boxShadow: '0 4px 20px rgba(15, 23, 42, 0.04)'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px', flexWrap: 'wrap', gap: '10px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '10px',
-                backgroundColor: '#ECFDF5',
-                color: '#059669',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-                <HeartHandshake size={20} />
-              </div>
-              <div>
-                <h2 style={{ fontSize: '17.5px', fontWeight: '800', color: '#0F172A', margin: 0 }}>
-                  Customer Preferences & Trends
-                </h2>
-                <span style={{ fontSize: '11.5px', color: '#64748B' }}>
-                  Most loved items with verified high buyer satisfaction
-                </span>
-              </div>
+              <Link to="/deals" style={{ fontSize: '12.5px', fontWeight: '700', color: '#059669', textDecoration: 'none' }}>
+                View Trending Picks →
+              </Link>
             </div>
 
-            <Link to="/deals" style={{ fontSize: '12.5px', fontWeight: '700', color: '#059669', textDecoration: 'none' }}>
-              View Trending Picks →
-            </Link>
-          </div>
-
-          <div className="home-2x2-grid">
-            {customerPreferences.map((prod) => (
-              <ProductCard key={prod.id} product={prod} />
-            ))}
-          </div>
-        </section>
+            <div className="home-2x2-grid">
+              {customerPreferences.map((prod) => (
+                <ProductCard key={prod.id} product={prod} />
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* 6. 👑 Featured Brand Boutiques */}
         <section>
@@ -453,7 +459,6 @@ export default function HomePage() {
                   e.currentTarget.style.borderColor = '#E2E8F0';
                 }}
               >
-                {/* Brand Logo Image Container */}
                 <div style={{
                   width: '52px',
                   height: '52px',
@@ -486,63 +491,115 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* 7. 💻 Trending in Flagships & Electronics (2x2 on Mobile) */}
-        <section className="home-section-container" style={{
-          backgroundColor: '#FFFFFF',
-          borderRadius: '24px',
-          border: '1px solid #E2E8F0',
-          padding: '24px',
-          boxShadow: '0 4px 20px rgba(15, 23, 42, 0.04)'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px', flexWrap: 'wrap', gap: '10px' }}>
-            <div>
-              <h2 style={{ fontSize: '17.5px', fontWeight: '800', color: '#0F172A', margin: 0 }}>
-                Trending in Flagships & Electronics
-              </h2>
-              <span style={{ fontSize: '11.5px', color: '#64748B' }}>
-                Zero-cost EMI and express next-day delivery on verified gadgets
-              </span>
+        {/* 7. 💻 Trending in Flagships & Electronics */}
+        {trendingElectronics.length > 0 && (
+          <section className="home-section-container" style={{
+            backgroundColor: '#FFFFFF',
+            borderRadius: '24px',
+            border: '1px solid #E2E8F0',
+            padding: '24px',
+            boxShadow: '0 4px 20px rgba(15, 23, 42, 0.04)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px', flexWrap: 'wrap', gap: '10px' }}>
+              <div>
+                <h2 style={{ fontSize: '17.5px', fontWeight: '800', color: '#0F172A', margin: 0 }}>
+                  Trending in Flagships & Electronics
+                </h2>
+                <span style={{ fontSize: '11.5px', color: '#64748B' }}>
+                  Zero-cost EMI and express next-day delivery on verified gadgets
+                </span>
+              </div>
+              <Link to="/products?category=electronics" style={{ fontSize: '12.5px', fontWeight: '700', color: '#6366F1', textDecoration: 'none' }}>
+                Explore Category →
+              </Link>
             </div>
-            <Link to="/products?category=electronics" style={{ fontSize: '12.5px', fontWeight: '700', color: '#6366F1', textDecoration: 'none' }}>
-              Explore Category →
-            </Link>
-          </div>
 
-          <div className="home-2x2-grid">
-            {trendingElectronics.map((prod) => (
-              <ProductCard key={prod.id} product={prod} />
-            ))}
-          </div>
-        </section>
-
-        {/* 8. ⭐ Community Bestsellers (2x2 on Mobile) */}
-        <section className="home-section-container" style={{
-          backgroundColor: '#FFFFFF',
-          borderRadius: '24px',
-          border: '1px solid #E2E8F0',
-          padding: '24px',
-          boxShadow: '0 4px 20px rgba(15, 23, 42, 0.04)'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px', flexWrap: 'wrap', gap: '10px' }}>
-            <div>
-              <h2 style={{ fontSize: '17.5px', fontWeight: '800', color: '#0F172A', margin: 0 }}>
-                Top Rated Community Bestsellers
-              </h2>
-              <span style={{ fontSize: '11.5px', color: '#64748B' }}>
-                Rated 4.7★ and above by verified Indian buyers
-              </span>
+            <div className="home-2x2-grid">
+              {trendingElectronics.map((prod) => (
+                <ProductCard key={prod.id} product={prod} />
+              ))}
             </div>
-            <Link to="/products" style={{ fontSize: '12.5px', fontWeight: '700', color: '#6366F1', textDecoration: 'none' }}>
-              View All Products →
-            </Link>
-          </div>
+          </section>
+        )}
 
-          <div className="home-2x2-grid">
-            {bestSellers.map((prod) => (
-              <ProductCard key={prod.id} product={prod} />
-            ))}
-          </div>
-        </section>
+        {/* 8. ⭐ Community Bestsellers */}
+        {bestSellers.length > 0 && (
+          <section className="home-section-container" style={{
+            backgroundColor: '#FFFFFF',
+            borderRadius: '24px',
+            border: '1px solid #E2E8F0',
+            padding: '24px',
+            boxShadow: '0 4px 20px rgba(15, 23, 42, 0.04)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px', flexWrap: 'wrap', gap: '10px' }}>
+              <div>
+                <h2 style={{ fontSize: '17.5px', fontWeight: '800', color: '#0F172A', margin: 0 }}>
+                  Top Rated Community Bestsellers
+                </h2>
+                <span style={{ fontSize: '11.5px', color: '#64748B' }}>
+                  Rated 4.7★ and above by verified Indian buyers
+                </span>
+              </div>
+              <Link to="/products" style={{ fontSize: '12.5px', fontWeight: '700', color: '#6366F1', textDecoration: 'none' }}>
+                View All Products →
+              </Link>
+            </div>
+
+            <div className="home-2x2-grid">
+              {bestSellers.map((prod) => (
+                <ProductCard key={prod.id} product={prod} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* If no products are uploaded yet, show Department & Onboarding Highlight */}
+        {allAvailable.length === 0 && (
+          <section style={{
+            backgroundColor: '#FFFFFF',
+            borderRadius: '24px',
+            border: '1px solid #E2E8F0',
+            padding: '36px 24px',
+            textAlign: 'center',
+            boxShadow: '0 4px 20px rgba(15, 23, 42, 0.04)'
+          }}>
+            <div style={{
+              width: '64px',
+              height: '64px',
+              borderRadius: '20px',
+              backgroundColor: '#EFF6FF',
+              color: '#2563EB',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: '16px'
+            }}>
+              <Sparkles size={32} />
+            </div>
+            <h3 style={{ fontSize: '20px', fontWeight: '900', color: '#0F172A', margin: '0 0 8px' }}>
+              Welcome to the Avero Marketplace Catalog
+            </h3>
+            <p style={{ fontSize: '14px', color: '#64748B', maxWidth: '520px', margin: '0 auto 24px', lineHeight: '1.6' }}>
+              Explore official brand boutiques above or visit our departments to discover fresh items added by verified sellers.
+            </p>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap' }}>
+              <Link
+                to="/categories"
+                className="btn btn-primary"
+                style={{ borderRadius: '9999px', padding: '12px 24px', fontSize: '13.5px', fontWeight: '800' }}
+              >
+                Browse All Departments
+              </Link>
+              <Link
+                to="/seller"
+                className="btn btn-secondary"
+                style={{ borderRadius: '9999px', padding: '12px 24px', fontSize: '13.5px', fontWeight: '800' }}
+              >
+                Become a Seller Partner
+              </Link>
+            </div>
+          </section>
+        )}
 
         {/* 9. 🛡️ Trust Pillars Grid */}
         <section style={{

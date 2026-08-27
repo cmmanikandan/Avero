@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { PRODUCTS } from '../data/products';
 import { getBrandBySlug, BRAND_DIRECTORY } from '../data/mockBrands';
 import { useApp } from '../context/AppContext';
 import ProductCard from '../components/product/ProductCard';
@@ -77,9 +76,9 @@ export default function BrandPage() {
     };
   }, [decodedBrand, user]);
 
-  // Combine live marketplace products + seller vendor submissions + mock products
+  // Combine live marketplace products + seller vendor submissions
   const allProducts = useMemo(() => {
-    const combined = [...products, ...vendorSubmissions, ...PRODUCTS];
+    const combined = [...products, ...vendorSubmissions];
     const seen = new Set();
     return combined.filter(p => {
       if (!p || !p.id || seen.has(p.id)) return false;

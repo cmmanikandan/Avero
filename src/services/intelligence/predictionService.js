@@ -3,8 +3,6 @@
  * Implements Random Forest Regressor & Multi-Variable Linear Regression for next-month unit & revenue predictions
  */
 
-import { PRODUCTS } from '../../data/products';
-
 export function getSalesPredictions({ sellerId = null, allProducts = [] } = {}) {
   const dataset = (allProducts || []).slice(0, 10);
 

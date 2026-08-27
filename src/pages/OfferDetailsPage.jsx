@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { AVAILABLE_COUPONS, BANK_OFFERS } from '../data/coupons';
-import { PRODUCTS } from '../data/products';
 import { useApp } from '../context/AppContext';
 import ProductCard from '../components/product/ProductCard';
 import {
@@ -19,7 +18,7 @@ import {
 export default function OfferDetailsPage() {
   const { offerId } = useParams();
   const navigate = useNavigate();
-  const { showToast } = useApp();
+  const { showToast, products = [] } = useApp();
 
   // Find offer from coupons or bank offers
   const matchedCoupon = AVAILABLE_COUPONS.find(
@@ -88,7 +87,7 @@ export default function OfferDetailsPage() {
   };
 
   // Eligible Products
-  const eligibleProducts = PRODUCTS.slice(0, 8);
+  const eligibleProducts = products.slice(0, 8);
 
   return (
     <div className="container" style={{ maxWidth: '1100px', padding: '16px 16px 80px', margin: '0 auto' }}>
@@ -118,55 +117,49 @@ export default function OfferDetailsPage() {
         style={{
           background: 'linear-gradient(135deg, #1366E2 0%, #072B66 100%)',
           borderRadius: 'var(--radius-lg)',
-          padding: '28px',
+          padding: '24px',
           color: '#ffffff',
-          marginBottom: '24px',
+          marginBottom: '20px',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           flexWrap: 'wrap',
-          gap: '20px',
-          boxShadow: 'var(--shadow-md)'
+          gap: '16px'
         }}
       >
-        <div style={{ flex: 1, minWidth: '260px' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', backgroundColor: 'rgba(255, 255, 255, 0.2)', padding: '4px 10px', borderRadius: 'var(--radius-full)', fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', marginBottom: '10px' }}>
-            <Tag size={13} color="#00C3F8" /> Verified Active Offer
+        <div style={{ maxWidth: '480px' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', backgroundColor: 'rgba(255, 255, 255, 0.15)', padding: '4px 10px', borderRadius: 'var(--radius-full)', fontSize: '11px', fontWeight: '700', marginBottom: '10px' }}>
+            <Sparkles size={12} /> {offerData.discountText}
           </div>
-          <h2 style={{ fontSize: '24px', fontWeight: '900', color: '#ffffff', margin: 0 }}>
+          <h2 style={{ fontSize: '20px', fontWeight: '800', margin: '0 0 6px 0' }}>
             {offerData.title}
           </h2>
-          <p style={{ fontSize: '14px', color: '#E2E8F0', marginTop: '6px' }}>
+          <p style={{ fontSize: '13px', opacity: 0.9, margin: 0 }}>
             {offerData.description}
           </p>
-          <div style={{ fontSize: '12px', color: '#93C5FD', marginTop: '8px' }}>
-            {offerData.expiry} • Min spend ₹{offerData.minOrder?.toLocaleString('en-IN') || 0}
-          </div>
         </div>
 
-        {/* Code Box with Copy Action */}
-        <div
-          style={{
-            backgroundColor: '#ffffff',
-            borderRadius: 'var(--radius-md)',
-            padding: '12px 18px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            color: 'var(--text-primary)'
-          }}
-        >
-          <div>
-            <div style={{ fontSize: '11px', fontWeight: '600', color: 'var(--text-secondary)' }}>COUPON CODE</div>
-            <div style={{ fontSize: '18px', fontWeight: '900', letterSpacing: '1px', color: 'var(--primary-600)' }}>
-              {offerData.code}
-            </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.25)', border: '1px dashed rgba(255, 255, 255, 0.4)', borderRadius: 'var(--radius-md)', padding: '8px 14px', textAlign: 'center' }}>
+            <span style={{ display: 'block', fontSize: '10px', opacity: 0.8, textTransform: 'uppercase' }}>PROMO CODE</span>
+            <strong style={{ fontSize: '16px', letterSpacing: '1px' }}>{offerData.code}</strong>
           </div>
           <button
             type="button"
             onClick={handleCopyCode}
-            className="btn btn-primary"
-            style={{ padding: '8px 14px', minHeight: '38px', fontSize: '12px', fontWeight: '700' }}
+            style={{
+              backgroundColor: '#ffffff',
+              color: 'var(--primary-600)',
+              border: 'none',
+              borderRadius: 'var(--radius-md)',
+              padding: '10px 16px',
+              fontSize: '13px',
+              fontWeight: '700',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
           >
             <Copy size={14} /> Copy
           </button>
@@ -196,17 +189,21 @@ export default function OfferDetailsPage() {
       </div>
 
       {/* Eligible Products Section */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-        <h3 style={{ fontSize: '17px', fontWeight: '800', color: 'var(--text-primary)', margin: 0 }}>
-          Eligible Products for this Offer ({eligibleProducts.length})
-        </h3>
-      </div>
+      {eligibleProducts.length > 0 && (
+        <>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+            <h3 style={{ fontSize: '17px', fontWeight: '800', color: 'var(--text-primary)', margin: 0 }}>
+              Eligible Products for this Offer ({eligibleProducts.length})
+            </h3>
+          </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))', gap: '14px' }}>
-        {eligibleProducts.map((p) => (
-          <ProductCard key={p.id} product={p} />
-        ))}
-      </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))', gap: '14px' }}>
+            {eligibleProducts.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

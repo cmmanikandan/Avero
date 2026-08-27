@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { PRODUCTS } from '../data/products';
 import { AVAILABLE_COUPONS } from '../data/coupons';
 import EmptyState from '../components/common/EmptyState';
 import ProductCard from '../components/product/ProductCard';

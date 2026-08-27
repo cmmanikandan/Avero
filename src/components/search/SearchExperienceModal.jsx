@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
-import { PRODUCTS } from '../../data/products';
 import { CATEGORIES } from '../../data/categories';
 import {
   Search,
@@ -50,20 +49,20 @@ export default function SearchExperienceModal() {
   const [scanStep, setScanStep] = useState('');
 
   const trendingTerms = [
-    'iPhone 15 Pro',
-    'OnePlus 12 5G',
-    'Sony WH-1000XM5',
-    'Nike Pegasus 40',
-    'Samsung S24 Ultra',
-    'MacBook Air M3',
-    'Nothing Phone 2'
+    'Flagship Mobiles',
+    'Gaming Laptops',
+    'Studio Audio',
+    'Running Shoes',
+    'Smart 4K TVs',
+    'Men Fashion',
+    'Smartwatches'
   ];
 
   const sampleVisualItems = [
-    { label: '📱 Flagship Smartphone', query: 'mobiles', img: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&q=80' },
-    { label: '🎧 ANC Headphones', query: 'Sony WH-1000XM5', img: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80' },
-    { label: '👟 Running Shoes', query: 'Nike Pegasus 40', img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80' },
-    { label: '💻 Ultrabook Laptop', query: 'MacBook Air M3', img: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=80' }
+    { label: '📱 Mobiles & Computing', query: 'mobiles', img: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&q=80' },
+    { label: '🎧 Audio & Sound', query: 'audio', img: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80' },
+    { label: '👟 Footwear & Fashion', query: 'footwear', img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80' },
+    { label: '💻 Laptops & Gadgets', query: 'laptops', img: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=80' }
   ];
 
   const handleExecuteSearch = (term) => {

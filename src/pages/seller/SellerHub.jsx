@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { PRODUCTS } from '../../data/products';
 import { useApp } from '../../context/AppContext';
 import { aiService } from '../../services/aiService';
 import { uploadToCloudinary } from '../../services/cloudinaryService';

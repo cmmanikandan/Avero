@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { PRODUCTS } from '../data/products';
 import { useApp } from '../context/AppContext';
 import {
   ArrowLeft,
@@ -20,7 +19,7 @@ export default function ProductReviewsPage() {
   const navigate = useNavigate();
   const { showToast, products = [] } = useApp();
 
-  const allAvailable = products.length > 0 ? products : PRODUCTS;
+  const allAvailable = products;
   const product = allAvailable.find((p) => String(p.id) === String(id)) || null;
 
   const [activeFilter, setActiveFilter] = useState('ALL'); // 'ALL' | '5' | '4' | '3' | '2' | '1' | 'PHOTOS' | 'VERIFIED'

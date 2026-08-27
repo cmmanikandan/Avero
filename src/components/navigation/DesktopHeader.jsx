@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
-import { PRODUCTS } from '../../data/products';
 import {
   Search,
   Mic,
@@ -25,6 +24,7 @@ export default function DesktopHeader() {
     user,
     cart,
     wishlist,
+    products = [],
     activePincode,
     pincodeCity,
     setIsLocationSelectorOpen,
@@ -46,9 +46,9 @@ export default function DesktopHeader() {
   // Cart total items
   const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-  // Filter suggestions
+  // Filter suggestions from live products
   const suggestions = searchTerm.trim()
-    ? PRODUCTS.filter(p => p.title.toLowerCase().includes(searchTerm.toLowerCase()) || p.brand.toLowerCase().includes(searchTerm.toLowerCase()) || p.category.toLowerCase().includes(searchTerm.toLowerCase())).slice(0, 6)
+    ? products.filter(p => (p.title || '').toLowerCase().includes(searchTerm.toLowerCase()) || (p.brand || '').toLowerCase().includes(searchTerm.toLowerCase()) || (p.category || '').toLowerCase().includes(searchTerm.toLowerCase())).slice(0, 6)
     : [];
 
   useEffect(() => {

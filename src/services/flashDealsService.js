@@ -2,9 +2,6 @@
  * Dynamic Flash Sales & Live Countdown Drops Engine
  * Manages active lightning deals, claim velocity meters, countdown timers & upcoming drops
  */
-
-import { PRODUCTS } from '../data/products';
-
 export const FLASH_DROPS_SCHEDULE = [];
 
 /**

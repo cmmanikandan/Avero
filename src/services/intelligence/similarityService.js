@@ -3,8 +3,6 @@
  * Implements Jaccard Similarity (Co-view / Co-purchase affinity) & Cosine Similarity (Vectorized attributes)
  */
 
-import { PRODUCTS } from '../../data/products';
-
 /**
  * Calculates Jaccard Similarity between two items based on interaction sets
  */
@@ -81,7 +79,7 @@ export function calculateCosineSimilarity(itemA, itemB) {
 /**
  * Finds top related & compatible products for a target item (used for PDP "Related Products" section and Intelligence tabs)
  */
-export function getRelatedAndCompatibleProducts(targetProduct, allProducts = PRODUCTS, limit = 6) {
+export function getRelatedAndCompatibleProducts(targetProduct, allProducts = [], limit = 6) {
   if (!targetProduct) return [];
 
   const scored = allProducts

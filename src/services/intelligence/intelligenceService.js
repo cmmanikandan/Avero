@@ -3,7 +3,6 @@
  * Acts as the centralized facade connecting Association Mining, Similarity, Clustering, Predictions & Forecasts
  */
 
-import { PRODUCTS } from '../../data/products';
 import { mineAssociationRules, getProductSmartCombos } from './associationMiningService';
 import { getRelatedAndCompatibleProducts } from './similarityService';
 import { getCustomerClusters } from './clusteringService';

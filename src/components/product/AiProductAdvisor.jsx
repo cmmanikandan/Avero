@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import { PRODUCTS } from '../../data/products';
 import { useApp } from '../../context/AppContext';
 import { aiService } from '../../services/aiService';
 import {
@@ -27,7 +26,7 @@ export default function AiProductAdvisor({ product }) {
   const [isAiThinking, setIsAiThinking] = useState(false);
   const [chatHistory, setChatHistory] = useState([]);
 
-  const allAvailable = products.length > 0 ? products : PRODUCTS;
+  const allAvailable = products;
 
   // Compute AI Match Score & Attributes
   const aiScore = useMemo(() => {

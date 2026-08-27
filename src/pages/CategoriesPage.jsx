@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { CATEGORIES } from '../data/categories';
-import { PRODUCTS } from '../data/products';
+import { useApp } from '../context/AppContext';
 import {
   Smartphone,
   Laptop,
@@ -73,13 +73,14 @@ const SUBCAT_IMAGES = {
 
 export default function CategoriesPage() {
   const navigate = useNavigate();
+  const { products = [] } = useApp();
   const [selectedCatId, setSelectedCatId] = useState(CATEGORIES[0].id);
 
   const activeCategory = CATEGORIES.find(c => c.id === selectedCatId) || CATEGORIES[0];
   const activeIcon = ICON_MAP[activeCategory.icon] || ShoppingBag;
 
   // Products in this category for trending preview
-  const categoryProducts = PRODUCTS.filter(p => p.category === activeCategory.id).slice(0, 4);
+  const categoryProducts = products.filter(p => p.category === activeCategory.id).slice(0, 4);
 
   return (
     <div style={{ backgroundColor: '#F8FAFC', minHeight: '100vh', paddingBottom: '70px' }}>
