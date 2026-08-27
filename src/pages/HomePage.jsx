@@ -89,6 +89,7 @@ export default function HomePage() {
         if (activeBanners.length > 0) {
           return activeBanners.map(b => ({
             ...b,
+            img: b.img || b.image || b.bannerUrl || 'https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=700&q=80',
             bg: b.bg || `radial-gradient(ellipse at 80% 50%, ${(b.accent || '#3B82F6')}40, transparent 60%), #090D16`
           }));
         }
@@ -254,8 +255,15 @@ export default function HomePage() {
                     boxShadow: '0 20px 40px rgba(0, 0, 0, 0.5)'
                   }}>
                     <img
-                      src={slide.img}
+                      src={slide.img || slide.image || 'https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=700&q=80'}
                       alt={slide.title}
+                      loading="eager"
+                      referrerPolicy="no-referrer"
+                      crossOrigin="anonymous"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = 'https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=700&q=80';
+                      }}
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
                   </div>
@@ -473,8 +481,15 @@ export default function HomePage() {
                   overflow: 'hidden'
                 }}>
                   <img
-                    src={b.logo}
+                    src={b.logo || `https://ui-avatars.com/api/?name=${encodeURIComponent(b.name)}&background=0F172A&color=FFFFFF&bold=true`}
                     alt={b.name}
+                    loading="lazy"
+                    referrerPolicy="no-referrer"
+                    crossOrigin="anonymous"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(b.name)}&background=0F172A&color=FFFFFF&bold=true`;
+                    }}
                     style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                   />
                 </div>

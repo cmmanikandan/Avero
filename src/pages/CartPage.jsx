@@ -248,8 +248,15 @@ export default function CartPage() {
                         }}
                       >
                         <img
-                          src={product.thumbnail}
+                          src={product.thumbnail || product.image || (Array.isArray(product.images) && product.images[0]) || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80'}
                           alt={product.title}
+                          loading="lazy"
+                          referrerPolicy="no-referrer"
+                          crossOrigin="anonymous"
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80';
+                          }}
                           style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }}
                         />
                       </Link>

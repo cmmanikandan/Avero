@@ -3,14 +3,64 @@ import { Link } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
 import { Heart, Star, ShieldCheck } from 'lucide-react';
 
+export const getCategoryFallbackImage = (category = '', title = '') => {
+  const text = `${category || ''} ${title || ''}`.toLowerCase();
+  if (text.includes('mob') || text.includes('phone') || text.includes('apple') || text.includes('oneplus') || text.includes('samsung galaxy')) {
+    return 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600&q=80';
+  }
+  if (text.includes('lap') || text.includes('macbook') || text.includes('asus') || text.includes('dell') || text.includes('rog')) {
+    return 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&q=80';
+  }
+  if (text.includes('aud') || text.includes('sound') || text.includes('head') || text.includes('speaker') || text.includes('sony') || text.includes('boat')) {
+    return 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=600&q=80';
+  }
+  if (text.includes('tv') || text.includes('oled') || text.includes('screen') || text.includes('display')) {
+    return 'https://images.unsplash.com/photo-1593784991095-a205069470b6?w=600&q=80';
+  }
+  if (text.includes('foot') || text.includes('shoe') || text.includes('sneak') || text.includes('nike') || text.includes('puma')) {
+    return 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80';
+  }
+  if (text.includes('fash') || text.includes('cloth') || text.includes('jean') || text.includes('shirt') || text.includes('levi')) {
+    return 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600&q=80';
+  }
+  if (text.includes('groc') || text.includes('coffee') || text.includes('food') || text.includes('bean') || text.includes('tokai')) {
+    return 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=600&q=80';
+  }
+  if (text.includes('home') || text.includes('kitchen') || text.includes('appl')) {
+    return 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80';
+  }
+  return 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&q=80';
+};
+
 export default function ProductCard({ product, layout = 'grid', claimProgress = null }) {
   const { isInWishlist, toggleWishlist } = useApp();
   const isWishlisted = isInWishlist(product.id);
+
+  const rawImg = product.thumbnail || product.image || (Array.isArray(product.images) && product.images[0]) || '';
+  const initialImg = rawImg && typeof rawImg === 'string' && rawImg.trim().length > 5 
+    ? rawImg 
+    : getCategoryFallbackImage(product.category, product.title);
+
+  const [imgSrc, setImgSrc] = React.useState(initialImg);
+
+  React.useEffect(() => {
+    const nextImg = product.thumbnail || product.image || (Array.isArray(product.images) && product.images[0]) || '';
+    setImgSrc(nextImg && typeof nextImg === 'string' && nextImg.trim().length > 5 
+      ? nextImg 
+      : getCategoryFallbackImage(product.category, product.title));
+  }, [product.thumbnail, product.image, product.images, product.category, product.title]);
 
   const handleWishlistClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
     toggleWishlist(product.id);
+  };
+
+  const handleImageError = () => {
+    const fallback = getCategoryFallbackImage(product.category, product.title);
+    if (imgSrc !== fallback) {
+      setImgSrc(fallback);
+    }
   };
 
   if (layout === 'list') {
@@ -56,9 +106,12 @@ export default function ProductCard({ product, layout = 'grid', claimProgress = 
           overflow: 'hidden'
         }}>
           <img
-            src={product.thumbnail}
-            alt={product.title}
+            src={imgSrc}
+            alt={product.title || 'Product'}
             loading="lazy"
+            referrerPolicy="no-referrer"
+            crossOrigin="anonymous"
+            onError={handleImageError}
             style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }}
           />
         </div>
@@ -230,9 +283,12 @@ export default function ProductCard({ product, layout = 'grid', claimProgress = 
         overflow: 'hidden'
       }}>
         <img
-          src={product.thumbnail}
-          alt={product.title}
+          src={imgSrc}
+          alt={product.title || 'Product'}
           loading="lazy"
+          referrerPolicy="no-referrer"
+          crossOrigin="anonymous"
+          onError={handleImageError}
           style={{
             maxHeight: '100%',
             maxWidth: '100%',
