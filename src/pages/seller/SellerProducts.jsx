@@ -118,8 +118,15 @@ export default function SellerProducts({ isAddMode = false }) {
 
   // Mode: 'list' or 'create'
   const [viewMode, setViewMode] = useState(
-    isAddMode || location.pathname.includes('/add') || location.pathname.includes('/new') ? 'create' : 'list'
+    isAddMode || location.pathname.includes('/add') || location.pathname.includes('/new') || location.search.includes('add=1') ? 'create' : 'list'
   );
+
+  React.useEffect(() => {
+    if (location.search.includes('add=1') || location.pathname.includes('/add') || location.pathname.includes('/new') || isAddMode) {
+      setViewMode('create');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [location.search, location.pathname, isAddMode]);
 
   const [searchFilter, setSearchFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('ALL');
@@ -416,7 +423,7 @@ export default function SellerProducts({ isAddMode = false }) {
   const primaryImgUrl = uploadedImages[selectedPrimaryImageIndex] || uploadedImages[0] || 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600&q=80';
 
   return (
-    <div style={{ backgroundColor: '#F8FAFC', minHeight: '100vh', padding: '20px 24px 60px' }}>
+    <div className="seller-products-page" style={{ width: '100%', boxSizing: 'border-box' }}>
       
       {/* ─────────────────────────────────────────────────────────────
           VIEW 1: FULL-PAGE ADD / EDIT PRODUCT STUDIO
@@ -426,11 +433,12 @@ export default function SellerProducts({ isAddMode = false }) {
           
           {/* Top Sticky Header with Back & Publish Button */}
           <div
+            className="seller-action-header"
             style={{
               backgroundColor: '#FFFFFF',
               borderRadius: '16px',
               border: '1px solid #E2E8F0',
-              padding: '16px 24px',
+              padding: '16px 20px',
               marginBottom: '20px',
               display: 'flex',
               alignItems: 'center',
@@ -440,7 +448,7 @@ export default function SellerProducts({ isAddMode = false }) {
               boxShadow: '0 2px 8px rgba(0,0,0,0.03)'
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
               <button
                 type="button"
                 onClick={() => setViewMode('list')}
@@ -459,7 +467,7 @@ export default function SellerProducts({ isAddMode = false }) {
               </div>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div className="seller-action-buttons" style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
               <button
                 type="button"
                 onClick={() => setViewMode('list')}
@@ -472,7 +480,7 @@ export default function SellerProducts({ isAddMode = false }) {
                 type="button"
                 onClick={handleSaveProduct}
                 className="btn btn-primary"
-                style={{ height: '40px', padding: '0 24px', fontSize: '13px', fontWeight: '800', gap: '6px' }}
+                style={{ height: '40px', padding: '0 20px', fontSize: '13px', fontWeight: '800', gap: '6px' }}
               >
                 <Check size={16} /> Submit & Publish Product
               </button>
@@ -480,7 +488,7 @@ export default function SellerProducts({ isAddMode = false }) {
           </div>
 
           {/* Main 2-Column Split: Form (Left 65%) + Live Output Card (Right 35%) */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 380px', gap: '24px', alignItems: 'start' }} className="seller-add-grid">
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 360px', gap: '20px', alignItems: 'start' }} className="seller-add-grid">
             
             {/* ── LEFT COLUMN: Product Creation Form ── */}
             <form onSubmit={handleSaveProduct} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -1915,9 +1923,34 @@ export default function SellerProducts({ isAddMode = false }) {
       )}
 
       <style>{`
-        @media (max-width: 900px) {
+        @media (max-width: 1024px) {
           .seller-add-grid {
             grid-template-columns: 1fr !important;
+          }
+          .seller-sticky-preview {
+            position: static !important;
+            width: 100% !important;
+            margin-top: 16px;
+          }
+          .seller-action-header {
+            flex-direction: column !important;
+            align-items: stretch !important;
+          }
+          .seller-action-buttons {
+            width: 100% !important;
+            justifyContent: space-between !important;
+          }
+          .seller-action-buttons button {
+            flex: 1 !important;
+          }
+        }
+        @media (max-width: 640px) {
+          .seller-products-page {
+            padding: 0 !important;
+          }
+          .seller-spec-row {
+            flex-direction: column !important;
+            align-items: stretch !important;
           }
         }
       `}</style>

@@ -315,26 +315,27 @@ export default function SellerLayout({ children }) {
       {/* ── MAIN CONTENT AREA ── */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, overflowX: 'hidden' }}>
         
-        {/* Top Navbar */}
+        {/* Permanent Sticky Top Navbar */}
         <header style={{
           backgroundColor: '#FFFFFF',
           borderBottom: '1px solid #E2E8F0',
-          padding: '12px 20px',
+          padding: '10px 16px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           position: 'sticky',
           top: 0,
-          zIndex: 40,
-          boxShadow: '0 1px 3px rgba(0,0,0,0.03)'
+          zIndex: 100,
+          boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+          gap: '12px'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          {/* Left: Mobile Drawer Trigger + Brand Identity */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
             <button
               type="button"
               className="mobile-seller-menu-trigger"
               onClick={() => setMobileMenuOpen(true)}
               style={{
-                display: 'none',
                 width: '38px',
                 height: '38px',
                 borderRadius: '10px',
@@ -343,24 +344,92 @@ export default function SellerLayout({ children }) {
                 border: 'none',
                 alignItems: 'center',
                 justifyContent: 'center',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                flexShrink: 0
               }}
+              title="Open Navigation Menu"
             >
-              <Menu size={20} />
+              <Menu size={18} />
             </button>
 
-            <span style={{ fontSize: '15px', fontWeight: '900', color: '#0F172A', letterSpacing: '-0.2px' }}>
-              Seller Central
-            </span>
-            <span style={{ fontSize: '11px', backgroundColor: '#FEF3C7', color: '#92400E', padding: '3px 9px', borderRadius: '6px', fontWeight: '800' }}>
-              Vendor Hub
-            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
+              <UserAvatar
+                user={{
+                  name: storeDisplayName,
+                  email: user?.email,
+                  avatar: activeStoreLogo,
+                  photoURL: activeStoreLogo
+                }}
+                size={34}
+                fontSize={13}
+                border="1.5px solid #E2E8F0"
+              />
+              <div style={{ minWidth: 0 }}>
+                <div style={{ fontSize: '13.5px', fontWeight: '900', color: '#0F172A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {storeDisplayName}
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ fontSize: '10px', backgroundColor: '#DCFCE7', color: '#166534', padding: '1px 6px', borderRadius: '4px', fontWeight: '800' }}>
+                    ● LIVE
+                  </span>
+                  <span style={{ fontSize: '11px', color: '#64748B' }}>
+                    Seller Hub
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          {/* Right: Quick Action Buttons & Switcher */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+            {/* Quick Add Product Button */}
+            <Link
+              to="/seller/products?add=1"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '5px',
+                backgroundColor: '#2563EB',
+                color: '#FFFFFF',
+                padding: '7px 12px',
+                borderRadius: '8px',
+                fontSize: '12px',
+                fontWeight: '800',
+                textDecoration: 'none',
+                boxShadow: '0 2px 6px rgba(37, 99, 235, 0.25)'
+              }}
+            >
+              <Plus size={14} />
+              <span className="hidden sm:inline">Add Product</span>
+            </Link>
+
+            {/* Live Storefront Link */}
+            <Link
+              to={`/brand/${storeSlug}`}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '5px',
+                backgroundColor: '#F8FAFC',
+                color: '#475569',
+                border: '1px solid #E2E8F0',
+                padding: '7px 10px',
+                borderRadius: '8px',
+                fontSize: '12px',
+                fontWeight: '700',
+                textDecoration: 'none'
+              }}
+              title="View Public Storefront"
+            >
+              <Sparkles size={13} color="#F59E0B" />
+              <span className="hidden md:inline">Storefront</span>
+              <ExternalLink size={11} />
+            </Link>
+
+            {/* Notification Bell */}
             <button
               type="button"
-              onClick={() => showToast('No unread seller alerts', 'info')}
+              onClick={() => showToast('All systems running normally', 'info')}
               style={{
                 background: '#F8FAFC',
                 border: '1px solid #E2E8F0',
@@ -372,10 +441,12 @@ export default function SellerLayout({ children }) {
                 alignItems: 'center',
                 justifyContent: 'center'
               }}
+              title="Notifications"
             >
-              <Bell size={16} />
+              <Bell size={15} />
             </button>
 
+            {/* Switch to Buyer Mode */}
             <Link
               to="/"
               style={{
@@ -384,21 +455,23 @@ export default function SellerLayout({ children }) {
                 color: '#2563EB',
                 backgroundColor: '#EFF6FF',
                 border: '1px solid #DBEAFE',
-                padding: '7px 12px',
+                padding: '7px 10px',
                 borderRadius: '8px',
                 textDecoration: 'none',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '4px'
               }}
+              title="Switch to Marketplace Customer View"
             >
-              <span className="hidden sm:inline">Buyer Store</span> →
+              <ShoppingBag size={13} />
+              <span className="hidden sm:inline">Marketplace</span>
             </Link>
           </div>
         </header>
 
         {/* Content Body */}
-        <main className="seller-main-wrapper" style={{ flex: 1, maxWidth: '1440px', width: '100%', boxSizing: 'border-box', margin: '0 auto' }}>
+        <main className="seller-main-wrapper" style={{ flex: 1, maxWidth: '1440px', width: '100%', boxSizing: 'border-box', margin: '0 auto', padding: '20px 24px' }}>
           {children}
         </main>
       </div>
