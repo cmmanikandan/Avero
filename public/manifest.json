@@ -1,16 +1,67 @@
 {
-  "short_name": "Avero",
+  "id": "avero-marketplace-pwa",
   "name": "Avero - India's Premier Online Marketplace",
+  "short_name": "Avero",
+  "description": "Explore genuine electronics, smartphones, laptops, fashion, beauty and home decor with fast delivery across 26,000+ pincodes.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
+  "background_color": "#071228",
+  "theme_color": "#1366E2",
+  "categories": ["shopping", "lifestyle", "business"],
+  "lang": "en-IN",
+  "dir": "ltr",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/logo.png",
       "type": "image/png",
-      "sizes": "192x192 512x512"
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
     }
   ],
-  "start_url": "/",
-  "background_color": "#F1F3F6",
-  "theme_color": "#1366E2",
-  "display": "standalone",
-  "orientation": "portrait"
+  "shortcuts": [
+    {
+      "name": "Explore Flash Deals",
+      "short_name": "Deals",
+      "description": "Lightning offers, vouchers and instant cashback",
+      "url": "/deals",
+      "icons": [{ "src": "/logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "My Orders & Tracking",
+      "short_name": "Orders",
+      "description": "Track live parcels and order invoices",
+      "url": "/orders",
+      "icons": [{ "src": "/logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Seller Hub",
+      "short_name": "Sell",
+      "description": "Vendor dashboard & catalog publishing",
+      "url": "/seller/products",
+      "icons": [{ "src": "/logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Wishlist",
+      "short_name": "Wishlist",
+      "description": "Saved favorite items and price alerts",
+      "url": "/wishlist",
+      "icons": [{ "src": "/logo.png", "sizes": "192x192" }]
+    }
+  ]
 }

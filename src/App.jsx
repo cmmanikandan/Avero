@@ -18,6 +18,8 @@ import SearchExperienceModal from './components/search/SearchExperienceModal';
 import Toast from './components/common/Toast';
 import CompareDrawer from './components/common/CompareDrawer';
 import AiShoppingBot from './components/common/AiShoppingBot';
+import SplashScreen from './components/common/SplashScreen';
+import PwaInstallPrompt from './components/common/PwaInstallPrompt';
 
 // Customer Panel Pages
 import HomePage from './pages/HomePage';
@@ -359,6 +361,8 @@ export default function App() {
       )}
 
       {/* Global Modals & Toasts */}
+      <SplashScreen />
+      <PwaInstallPrompt />
       <AuthModal />
       <ProfileSetupWizardModal isOpen={isProfileWizardOpen} onClose={() => setIsProfileWizardOpen(false)} />
       <LocationModal />

@@ -1172,9 +1172,10 @@ img {
 @media (max-width: 1023px) {
   .mobile-bottom-nav-wrap {
     display: block !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
   body {
-    padding-bottom: 64px !important;
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
   }
 }
 
@@ -1182,6 +1183,24 @@ img {
   .mobile-bottom-nav-wrap {
     display: none !important;
   }
+}
+
+/* PWA Standalone & Mobile Safe Area Enhancements */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .mobile-header-wrap {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+}
+
+@media (display-mode: standalone) {
+  body {
+    -webkit-touch-callout: none;
+  }
+}
+
+/* Smooth Touch and Tap Feedback */
+* {
+  -webkit-tap-highlight-color: transparent;
 }
 
 

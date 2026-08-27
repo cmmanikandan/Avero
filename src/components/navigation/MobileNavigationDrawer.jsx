@@ -19,7 +19,8 @@ import {
   LogIn,
   ChevronRight,
   Sparkles,
-  Compass
+  Compass,
+  Download
 } from 'lucide-react';
 
 export default function MobileNavigationDrawer() {
@@ -381,6 +382,34 @@ export default function MobileNavigationDrawer() {
                   </div>
                 );
               })}
+
+              <div
+                onClick={() => {
+                  closeDrawer();
+                  window.dispatchEvent(new CustomEvent('open-pwa-install'));
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '10px 12px',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontSize: '13px',
+                  fontWeight: '700',
+                  color: '#1366E2',
+                  backgroundColor: '#EFF6FF',
+                  marginTop: '6px'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <Download size={17} color="#1366E2" />
+                  <span>Install Avero App (PWA)</span>
+                </div>
+                <span style={{ fontSize: '10px', backgroundColor: '#1366E2', color: '#FFFFFF', padding: '2px 6px', borderRadius: '4px', fontWeight: '800' }}>
+                  FREE
+                </span>
+              </div>
             </div>
           </div>
 
