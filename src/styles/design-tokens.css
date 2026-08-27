@@ -1,0 +1,94 @@
+:root {
+  /* Brand Luxury Minimalist Tokens */
+  --primary-50: #EEF2FF;
+  --primary-100: #E0E7FF;
+  --primary-200: #C7D2FE;
+  --primary-300: #A5B4FC;
+  --primary-400: #818CF8;
+  --primary-500: #6366F1;
+  --primary-600: #4F46E5; /* Sophisticated Indigo / Electric Violet */
+  --primary-700: #4338CA;
+  --primary-800: #3730A3;
+  --primary-900: #312E81;
+
+  /* Accent & Action Colors */
+  --accent-cyan: #06B6D4;
+  --accent-cyan-light: #ECFEFF;
+  --action-buy: #0F172A; /* Modern Luxury Black / Charcoal CTA */
+  --action-buy-hover: #1E293B;
+  --action-cart: #4F46E5; /* Rich Indigo Add to Bag */
+  --action-cart-hover: #4338CA;
+  
+  /* Status & Accents */
+  --savings-green: #059669; /* Refined Emerald */
+  --savings-green-bg: #ECFDF5;
+  --savings-green-border: #A7F3D0;
+  --rating-green: #059669;
+  --rating-green-dark: #047857;
+  --rating-orange: #D97706;
+  --rating-red: #E11D48;
+
+  /* Neutral Slate Palette */
+  --bg-app: #F8FAFC;
+  --bg-card: #FFFFFF;
+  --bg-surface: #F8FAFC;
+  --bg-subtle: #F1F5F9;
+  --bg-hover: #F8FAFC;
+  --bg-dark: #090D16;
+
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #94A3B8;
+  --text-inverse: #FFFFFF;
+  --text-price: #0F172A;
+  --text-strikethrough: #94A3B8;
+
+  /* Subtle Borders & Dividers */
+  --border-subtle: #E2E8F0;
+  --border-light: #F1F5F9;
+  --border-focus: #4F46E5;
+  --border-divider: #F1F5F9;
+
+  /* Modern Curved Radius */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 28px;
+  --radius-full: 9999px;
+
+  /* Minimal Multi-Layer Elevation Shadows */
+  --shadow-xs: 0 1px 3px rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 12px 28px -6px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 24px 48px -12px rgba(15, 23, 42, 0.12);
+  --shadow-hover: 0 20px 40px -15px rgba(79, 70, 229, 0.15);
+  --shadow-bottom-nav: 0 -4px 20px rgba(15, 23, 42, 0.06);
+  --shadow-sticky: 0 -8px 24px rgba(15, 23, 42, 0.08);
+
+  /* Typography Scale */
+  --font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  --font-display: 800 32px/1.15 var(--font-family);
+  --font-page-title: 800 24px/1.25 var(--font-family);
+  --font-section-title: 700 18px/1.3 var(--font-family);
+  --font-product-title: 600 14px/1.35 var(--font-family);
+  --font-body: 400 14px/1.5 var(--font-family);
+  --font-body-medium: 500 14px/1.5 var(--font-family);
+  --font-body-semibold: 600 14px/1.5 var(--font-family);
+  --font-secondary: 400 12px/1.4 var(--font-family);
+  --font-price: 800 22px/1.15 var(--font-family);
+  --font-metadata: 600 11px/1.3 var(--font-family);
+
+  /* Z-Index Hierarchy */
+  --z-base: 1;
+  --z-dropdown: 50;
+  --z-sticky: 100;
+  --z-fixed: 200;
+  --z-header: 300;
+  --z-drawer: 400;
+  --z-modal-backdrop: 500;
+  --z-modal: 510;
+  --z-toast: 600;
+}

@@ -1,0 +1,16 @@
+{
+  "short_name": "Avero",
+  "name": "Avero - India's Premier Online Marketplace",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "type": "image/png",
+      "sizes": "192x192 512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#F1F3F6",
+  "theme_color": "#1366E2",
+  "display": "standalone",
+  "orientation": "portrait"
+}
