@@ -3,24 +3,24 @@ import { Sparkles, ShieldCheck, Zap } from 'lucide-react';
 
 export default function SplashScreen({ onFinish }) {
   const [fadeState, setFadeState] = useState('visible'); // 'visible' | 'fading' | 'hidden'
-  const [progress, setProgress] = useState(15);
+  const [progress, setProgress] = useState(18);
 
   useEffect(() => {
-    // Step progress
-    const t1 = setTimeout(() => setProgress(55), 300);
-    const t2 = setTimeout(() => setProgress(90), 750);
-    const t3 = setTimeout(() => setProgress(100), 1100);
+    // Progressive loading steps
+    const t1 = setTimeout(() => setProgress(58), 280);
+    const t2 = setTimeout(() => setProgress(88), 700);
+    const t3 = setTimeout(() => setProgress(100), 1050);
 
     // Trigger smooth fade out
     const fadeTimer = setTimeout(() => {
       setFadeState('fading');
-    }, 1350);
+    }, 1300);
 
-    // Complete and unmount
+    // Unmount
     const finishTimer = setTimeout(() => {
       setFadeState('hidden');
       if (typeof onFinish === 'function') onFinish();
-    }, 1750);
+    }, 1700);
 
     return () => {
       clearTimeout(t1);
@@ -39,14 +39,14 @@ export default function SplashScreen({ onFinish }) {
         position: 'fixed',
         inset: 0,
         zIndex: 999999,
-        backgroundColor: '#071228',
-        background: 'radial-gradient(circle at 50% 35%, #0F2856 0%, #071228 75%)',
+        backgroundColor: '#FFFFFF',
+        background: 'radial-gradient(circle at 50% 32%, rgba(238, 242, 255, 0.95) 0%, rgba(248, 250, 252, 0.98) 50%, #FFFFFF 100%)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         padding: '24px',
-        color: '#ffffff',
+        color: '#0F172A',
         opacity: fadeState === 'fading' ? 0 : 1,
         transition: 'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s ease',
         transform: fadeState === 'fading' ? 'scale(1.02)' : 'scale(1)',
@@ -59,17 +59,17 @@ export default function SplashScreen({ onFinish }) {
       <div
         style={{
           position: 'absolute',
-          top: '20%',
-          width: '300px',
-          height: '300px',
+          top: '22%',
+          width: '320px',
+          height: '320px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(19, 102, 226, 0.25) 0%, rgba(0,0,0,0) 70%)',
-          filter: 'blur(40px)',
+          background: 'radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(6, 182, 212, 0.04) 60%, rgba(255,255,255,0) 75%)',
+          filter: 'blur(36px)',
           pointerEvents: 'none'
         }}
       />
 
-      {/* Main Logo & Animated Shield Container */}
+      {/* Main Logo & Content Stage */}
       <div
         style={{
           position: 'relative',
@@ -80,20 +80,21 @@ export default function SplashScreen({ onFinish }) {
           zIndex: 2
         }}
       >
-        {/* Glowing Logo Icon */}
+        {/* Modern 3D Elevated Logo Card */}
         <div
           style={{
             position: 'relative',
-            width: '88px',
-            height: '88px',
-            borderRadius: '24px',
-            background: 'linear-gradient(135deg, #1366E2 0%, #00C3F8 100%)',
+            width: '92px',
+            height: '92px',
+            borderRadius: '26px',
+            background: 'linear-gradient(145deg, #FFFFFF 0%, #F1F5F9 100%)',
+            border: '1.5px solid rgba(226, 232, 240, 0.8)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 12px 36px rgba(19, 102, 226, 0.45), 0 0 0 2px rgba(255, 255, 255, 0.15)',
-            marginBottom: '20px',
-            animation: 'averoPulse 2.2s infinite ease-in-out'
+            boxShadow: '0 20px 40px -10px rgba(79, 70, 229, 0.18), 0 10px 20px -5px rgba(15, 23, 42, 0.06)',
+            marginBottom: '22px',
+            animation: 'averoLightPulse 2.4s infinite ease-in-out'
           }}
         >
           <img
@@ -103,7 +104,7 @@ export default function SplashScreen({ onFinish }) {
               width: '64px',
               height: '64px',
               objectFit: 'contain',
-              filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))'
+              filter: 'drop-shadow(0 4px 10px rgba(19, 102, 226, 0.22))'
             }}
             onError={(e) => {
               e.target.style.display = 'none';
@@ -114,11 +115,11 @@ export default function SplashScreen({ onFinish }) {
         {/* Brand Name */}
         <h1
           style={{
-            fontSize: '32px',
+            fontSize: '34px',
             fontWeight: '900',
-            letterSpacing: '-0.5px',
-            margin: '0 0 6px 0',
-            background: 'linear-gradient(135deg, #FFFFFF 30%, #93C5FD 100%)',
+            letterSpacing: '-0.6px',
+            margin: '0 0 8px 0',
+            background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 40%, #4338CA 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent'
           }}
@@ -126,82 +127,83 @@ export default function SplashScreen({ onFinish }) {
           AVERO
         </h1>
 
-        {/* Tagline Badge */}
+        {/* Tagline Pill Badge */}
         <div
           style={{
             display: 'inline-flex',
             alignItems: 'center',
             gap: '6px',
-            backgroundColor: 'rgba(255, 255, 255, 0.08)',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
-            padding: '6px 14px',
-            borderRadius: '100px',
+            backgroundColor: '#EEF2FF',
+            border: '1px solid #E0E7FF',
+            padding: '5px 14px',
+            borderRadius: '9999px',
             fontSize: '11px',
-            fontWeight: '700',
-            letterSpacing: '1.2px',
+            fontWeight: '800',
+            letterSpacing: '1px',
             textTransform: 'uppercase',
-            color: '#93C5FD',
-            marginBottom: '32px'
+            color: '#4F46E5',
+            marginBottom: '32px',
+            boxShadow: '0 2px 6px rgba(79, 70, 229, 0.08)'
           }}
         >
-          <Sparkles size={12} color="#00C3F8" />
+          <Sparkles size={12} color="#4F46E5" />
           India's Premier Marketplace
         </div>
 
-        {/* Minimal Progress Bar */}
+        {/* Modern Crisp Progress Bar */}
         <div
           style={{
             width: '180px',
             height: '4px',
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
-            borderRadius: '100px',
+            backgroundColor: '#E2E8F0',
+            borderRadius: '9999px',
             overflow: 'hidden',
             position: 'relative',
-            marginBottom: '16px'
+            marginBottom: '18px'
           }}
         >
           <div
             style={{
               height: '100%',
               width: `${progress}%`,
-              background: 'linear-gradient(90deg, #1366E2 0%, #00C3F8 100%)',
-              borderRadius: '100px',
-              transition: 'width 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-              boxShadow: '0 0 12px rgba(0, 195, 248, 0.6)'
+              background: 'linear-gradient(90deg, #4F46E5 0%, #06B6D4 100%)',
+              borderRadius: '9999px',
+              transition: 'width 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+              boxShadow: '0 0 10px rgba(79, 70, 229, 0.45)'
             }}
           />
         </div>
 
-        {/* Security & Speed Indicators */}
+        {/* Trust & Speed Badges */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '16px',
-            fontSize: '11px',
+            gap: '14px',
+            fontSize: '11.5px',
             color: '#64748B',
             fontWeight: '600'
           }}
         >
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-            <Zap size={11} color="#00C3F8" /> Express 24h
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#475569' }}>
+            <Zap size={12} color="#4F46E5" /> Fast Delivery
           </span>
-          <span>•</span>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-            <ShieldCheck size={11} color="#10B981" /> 100% Genuine
+          <span style={{ color: '#CBD5E1' }}>•</span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#475569' }}>
+            <ShieldCheck size={12} color="#059669" /> 100% Genuine
           </span>
         </div>
       </div>
 
       <style>{`
-        @keyframes averoPulse {
+        @keyframes averoLightPulse {
           0%, 100% {
             transform: scale(1);
-            box-shadow: 0 12px 36px rgba(19, 102, 226, 0.45), 0 0 0 2px rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px -10px rgba(79, 70, 229, 0.18), 0 10px 20px -5px rgba(15, 23, 42, 0.06);
           }
           50% {
-            transform: scale(1.04);
-            box-shadow: 0 16px 44px rgba(19, 102, 226, 0.65), 0 0 0 4px rgba(0, 195, 248, 0.3);
+            transform: scale(1.035);
+            box-shadow: 0 24px 48px -8px rgba(79, 70, 229, 0.28), 0 12px 24px -4px rgba(6, 182, 212, 0.15);
           }
         }
       `}</style>
