@@ -1,7 +1,8 @@
 -- =============================================================================
 -- AVERO HYPER-COMMERCE MARKETPLACE - SUPABASE POSTGRESQL SCHEMA
--- Version: 2.0 Production Ready
+-- Version: 3.0 Production Ready
 -- Compatible with: Supabase / PostgreSQL 14+
+-- Includes: All Tables, Indices, RLS Policies, Storage Buckets, and Seed Data
 -- =============================================================================
 
 -- Enable required PostgreSQL extensions
@@ -14,7 +15,7 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 -- =============================================================================
 CREATE TABLE IF NOT EXISTS public.users (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    firebase_uid VARCHAR(128) UNIQUE NOT NULL,
+    firebase_uid VARCHAR(128) UNIQUE,
     email VARCHAR(255) UNIQUE NOT NULL,
     name VARCHAR(255) NOT NULL,
     phone VARCHAR(20),
@@ -39,13 +40,13 @@ CREATE INDEX IF NOT EXISTS idx_users_role ON public.users(role);
 -- =============================================================================
 CREATE TABLE IF NOT EXISTS public.sellers (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES public.users(id) ON DELETE SET NULL,
     store_name VARCHAR(255) UNIQUE NOT NULL,
-    store_slug VARCHAR(255) UNIQUE NOT NULL,
+    store_slug VARCHAR(255),
     owner_name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     phone VARCHAR(20) NOT NULL,
-    business_type VARCHAR(100) DEFAULT 'Private Limited',
+    business_type VARCHAR(100) DEFAULT 'Proprietorship',
     gstin VARCHAR(50),
     pan VARCHAR(20),
     pickup_address JSONB NOT NULL DEFAULT '{}'::jsonb,
@@ -59,8 +60,9 @@ CREATE TABLE IF NOT EXISTS public.sellers (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_sellers_user_id ON public.sellers(user_id);
+CREATE INDEX IF NOT EXISTS idx_sellers_email ON public.sellers(email);
 CREATE INDEX IF NOT EXISTS idx_sellers_status ON public.sellers(status);
+CREATE INDEX IF NOT EXISTS idx_sellers_store_name ON public.sellers(store_name);
 
 -- =============================================================================
 -- 3. PRODUCT CATEGORIES & SUB-CATEGORIES
@@ -75,6 +77,8 @@ CREATE TABLE IF NOT EXISTS public.categories (
     active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+CREATE INDEX IF NOT EXISTS idx_categories_slug ON public.categories(slug);
 
 -- =============================================================================
 -- 4. PRODUCTS & INVENTORY TABLE
@@ -147,16 +151,11 @@ CREATE TABLE IF NOT EXISTS public.orders (
     customer_phone VARCHAR(20),
     items JSONB NOT NULL DEFAULT '[]'::jsonb,
     total_amount NUMERIC(12, 2) NOT NULL CHECK (total_amount >= 0),
-    payment_method VARCHAR(50) DEFAULT 'UPI' CHECK (payment_method IN ('UPI', 'Credit/Debit Card', 'Net Banking', 'Cash on Delivery')),
-    payment_status VARCHAR(50) DEFAULT 'Completed' CHECK (payment_status IN ('Pending', 'Completed', 'Failed', 'Refunded')),
-    status VARCHAR(50) DEFAULT 'Confirmed' CHECK (status IN ('Ordered', 'Confirmed', 'Packed', 'Shipped', 'In Transit', 'Out for Delivery', 'Delivered', 'Cancelled', 'Returned')),
+    payment_method VARCHAR(50) DEFAULT 'UPI',
+    payment_status VARCHAR(50) DEFAULT 'Completed',
+    status VARCHAR(50) DEFAULT 'Confirmed',
     delivery_address JSONB NOT NULL DEFAULT '{}'::jsonb,
-    courier JSONB NOT NULL DEFAULT '{
-        "partner": "BlueDart Express",
-        "trackingNumber": "BLR89210921",
-        "driverName": "Suresh Kumar",
-        "otp": "7842"
-    }'::jsonb,
+    courier JSONB NOT NULL DEFAULT '{}'::jsonb,
     timeline JSONB NOT NULL DEFAULT '[]'::jsonb,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
@@ -203,13 +202,15 @@ CREATE TABLE IF NOT EXISTS public.coupons (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+CREATE INDEX IF NOT EXISTS idx_coupons_code ON public.coupons(code);
+
 -- =============================================================================
--- 9. DELIVERY FLEET & AGENTS TABLE
+-- 9. DELIVERY PARTNERS & FLEET AGENTS TABLE
 -- =============================================================================
-CREATE TABLE IF NOT EXISTS public.delivery_agents (
-    id VARCHAR(50) PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS public.delivery_partners (
+    id VARCHAR(100) PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
-    phone VARCHAR(20) UNIQUE NOT NULL,
+    phone VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(255),
     city VARCHAR(100) DEFAULT 'Karur',
     vehicle_type VARCHAR(100) DEFAULT 'Motorcycle',
@@ -218,55 +219,103 @@ CREATE TABLE IF NOT EXISTS public.delivery_agents (
     status VARCHAR(30) DEFAULT 'APPROVED' CHECK (status IN ('PENDING_APPROVAL', 'APPROVED', 'REJECTED', 'SUSPENDED')),
     is_on_duty BOOLEAN DEFAULT TRUE,
     rating NUMERIC(3, 2) DEFAULT 4.9,
-    completed_deliveries INT DEFAULT 148,
-    earnings_today NUMERIC(10, 2) DEFAULT 1450.00,
+    completed_deliveries INT DEFAULT 0,
+    earnings_today NUMERIC(10, 2) DEFAULT 0.00,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_delivery_partners_phone ON public.delivery_partners(phone);
+CREATE INDEX IF NOT EXISTS idx_delivery_partners_status ON public.delivery_partners(status);
+
+-- Legacy compatibility table alias
+CREATE TABLE IF NOT EXISTS public.delivery_agents (
+    id VARCHAR(100) PRIMARY KEY,
+    name VARCHAR(200) NOT NULL,
+    phone VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(255),
+    city VARCHAR(100) DEFAULT 'Karur',
+    vehicle_type VARCHAR(100) DEFAULT 'Motorcycle',
+    vehicle_number VARCHAR(50) NOT NULL,
+    license_number VARCHAR(50) NOT NULL,
+    status VARCHAR(30) DEFAULT 'APPROVED',
+    is_on_duty BOOLEAN DEFAULT TRUE,
+    rating NUMERIC(3, 2) DEFAULT 4.9,
+    completed_deliveries INT DEFAULT 0,
+    earnings_today NUMERIC(10, 2) DEFAULT 0.00,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- =============================================================================
--- 10. ROW LEVEL SECURITY (RLS) POLICIES
+-- 10. AD CAMPAIGNS & SPONSORED ADS TABLE
+-- =============================================================================
+CREATE TABLE IF NOT EXISTS public.ad_campaigns (
+    id VARCHAR(100) PRIMARY KEY,
+    seller_name VARCHAR(255),
+    name VARCHAR(255) NOT NULL,
+    product_title VARCHAR(300),
+    daily_budget NUMERIC(10, 2) DEFAULT 500.00,
+    keywords TEXT,
+    status VARCHAR(50) DEFAULT 'Active',
+    spent NUMERIC(10, 2) DEFAULT 0.00,
+    clicks INT DEFAULT 0,
+    impressions INT DEFAULT 0,
+    roas VARCHAR(50) DEFAULT '0.0x',
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_ad_campaigns_seller_name ON public.ad_campaigns(seller_name);
+CREATE INDEX IF NOT EXISTS idx_ad_campaigns_status ON public.ad_campaigns(status);
+
+-- =============================================================================
+-- 11. ROW LEVEL SECURITY (RLS) POLICIES
 -- =============================================================================
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.sellers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.addresses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.reviews ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.coupons ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.delivery_partners ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.delivery_agents ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.ad_campaigns ENABLE ROW LEVEL SECURITY;
 
--- Products: Everyone can read active products
-CREATE POLICY "Public Read Products" ON public.products
-    FOR SELECT USING (true);
-
--- Products: Authenticated sellers and admins can insert/update
-CREATE POLICY "Seller Manage Products" ON public.products
-    FOR ALL USING (true);
-
--- Orders: Users can read and insert their orders
-CREATE POLICY "Customer Manage Orders" ON public.orders
-    FOR ALL USING (true);
-
--- Addresses: Users can read and manage their addresses
-CREATE POLICY "Customer Manage Addresses" ON public.addresses
-    FOR ALL USING (true);
-
--- Reviews: Public read, authenticated insert
-CREATE POLICY "Public Read Reviews" ON public.reviews
-    FOR SELECT USING (true);
-
-CREATE POLICY "Authenticated Insert Reviews" ON public.reviews
-    FOR INSERT WITH CHECK (true);
-
--- Coupons: Public read
-CREATE POLICY "Public Read Coupons" ON public.coupons
-    FOR SELECT USING (active = true);
-
--- Delivery: Agents can manage delivery records
-CREATE POLICY "Delivery Fleet Manage" ON public.delivery_agents
-    FOR ALL USING (true);
+-- Permissive policies for marketplace operational flow
+CREATE POLICY "Public Users All" ON public.users FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public Sellers All" ON public.sellers FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public Categories Select" ON public.categories FOR SELECT USING (true);
+CREATE POLICY "Public Products All" ON public.products FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public Addresses All" ON public.addresses FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public Orders All" ON public.orders FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public Reviews All" ON public.reviews FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public Coupons All" ON public.coupons FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public Delivery Partners All" ON public.delivery_partners FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public Delivery Agents All" ON public.delivery_agents FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Public Ad Campaigns All" ON public.ad_campaigns FOR ALL USING (true) WITH CHECK (true);
 
 -- =============================================================================
--- 11. INITIAL SEED DATA
+-- 12. STORAGE BUCKETS (Product Images, Reviews Media, Seller Docs)
+-- =============================================================================
+INSERT INTO storage.buckets (id, name, public) VALUES 
+('product-images', 'product-images', true),
+('reviews-media', 'reviews-media', true),
+('seller-docs', 'seller-docs', true)
+ON CONFLICT (id) DO NOTHING;
+
+CREATE POLICY "Public Storage Access product-images" ON storage.objects
+    FOR ALL USING (bucket_id = 'product-images') WITH CHECK (bucket_id = 'product-images');
+
+CREATE POLICY "Public Storage Access reviews-media" ON storage.objects
+    FOR ALL USING (bucket_id = 'reviews-media') WITH CHECK (bucket_id = 'reviews-media');
+
+CREATE POLICY "Public Storage Access seller-docs" ON storage.objects
+    FOR ALL USING (bucket_id = 'seller-docs') WITH CHECK (bucket_id = 'seller-docs');
+
+-- =============================================================================
+-- 13. INITIAL SEED DATA
 -- =============================================================================
 
 -- Seed Categories
@@ -285,9 +334,4 @@ INSERT INTO public.coupons (id, code, description, discount_type, discount_amoun
 ('c2', 'SUPERAVERO', 'Flat ₹200 OFF on orders above ₹1,499', 'fixed', 200, 0, 1499, 200, true),
 ('c3', 'FESTIVE500', 'Special Festive ₹500 OFF on premium electronics', 'fixed', 500, 0, 4999, 500, true),
 ('c4', 'TECHPRO15', '15% OFF up to ₹1,500 on Audio and Accessories', 'percentage', 0, 15, 2499, 1500, true)
-ON CONFLICT (id) DO NOTHING;
-
--- Seed Default Delivery Agent
-INSERT INTO public.delivery_agents (id, name, phone, email, city, vehicle_type, vehicle_number, license_number, status, is_on_duty, rating, completed_deliveries, earnings_today) VALUES
-('DP-1001', 'Suresh Kumar', '+91 98450 12345', 'suresh.delivery@avero.in', 'Karur', 'Motorcycle (Hero Splendor+)', 'TN 47 AQ 8921', 'TN-47-2018-0029102', 'APPROVED', true, 4.9, 148, 1450.00)
 ON CONFLICT (id) DO NOTHING;

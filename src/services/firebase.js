@@ -13,14 +13,14 @@ import {
 } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || 'mock_firebase_api_key',
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || 'avero-marketplace.firebaseapp.com',
-  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL || '',
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || 'avero-marketplace',
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || 'avero-marketplace.firebasestorage.app',
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '123456789012',
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || '1:123456789012:web:mockappid123456',
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || 'G-MOCKMEASURE'
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || 'AIzaSyBWOtbL0u6DkA6Xl0vuYQMSWqQruk5H1cc',
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || 'nexora-chat-99f82.firebaseapp.com',
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL || 'https://nexora-chat-99f82-default-rtdb.firebaseio.com',
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || 'nexora-chat-99f82',
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || 'nexora-chat-99f82.firebasestorage.app',
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '366651511439',
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || '1:366651511439:web:69bc784a399436a4ba96fa',
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || 'G-89H3RFEBQ9'
 };
 
 // Initialize Firebase App instance safely
