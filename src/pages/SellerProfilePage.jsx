@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { MOCK_SELLER } from '../data/mockSellers';
 import ProductCard from '../components/product/ProductCard';
 import {
   ArrowLeft,
@@ -44,7 +43,7 @@ export default function SellerProfilePage() {
 
   const sellerName = sellerId
     ? sellerId.replace(/-/g, ' ').replace(/(^\w{1})|(\s+\w{1})/g, (l) => l.toUpperCase())
-    : MOCK_SELLER.storeName;
+    : 'Partner Store';
 
   return (
     <div className="container" style={{ maxWidth: '1280px', padding: '16px 16px 80px', margin: '0 auto' }}>

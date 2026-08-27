@@ -51,7 +51,7 @@ export default function AdminSettings() {
     requireDeliveryOtp: true,
 
     // Payments & Escrow
-    razorpayKeyId: 'rzp_test_mockKey12345',
+    razorpayKeyId: import.meta.env.VITE_RAZORPAY_KEY_ID || '',
     razorpaySecret: '••••••••••••••••••••••••',
     settlementCycle: 'INSTANT_OTP', // 'INSTANT_OTP' | 'T_PLUS_2'
     autoRefunds: true,

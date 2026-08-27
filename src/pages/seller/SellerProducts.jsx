@@ -48,21 +48,7 @@ const PRESET_COLORS = [
   { name: 'Deep Purple', hex: '#7C3AED', image: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600&q=80' }
 ];
 
-const SAMPLE_PRESETS = {
-  mobiles: [
-    { title: 'Nothing Phone (2a) 5G (Special Edition, 256 GB)', brand: 'Nothing', price: 23999, mrp: 27999, image: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600&q=80' },
-    { title: 'OnePlus 12R 5G (Cool Blue, 16 GB RAM, 256 GB)', brand: 'OnePlus', price: 42999, mrp: 45999, image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&q=80' }
-  ],
-  laptops: [
-    { title: 'Apple MacBook Air M3 (13-inch, 16GB Unified RAM, 512GB SSD)', brand: 'Apple', price: 114900, mrp: 124900, image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&q=80' }
-  ],
-  audio: [
-    { title: 'Sony WH-1000XM5 Wireless Industry Leading Noise Canceling', brand: 'Sony', price: 29990, mrp: 34990, image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&q=80' }
-  ],
-  footwear: [
-    { title: 'Nike Air Max 270 React High Impact Cushioning Sneakers', brand: 'Nike', price: 9995, mrp: 12995, image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80' }
-  ]
-};
+
 
 const DEFAULT_CATEGORY_SPECS = {
   mobiles: [
@@ -253,13 +239,6 @@ export default function SellerProducts({ isAddMode = false }) {
           setSpecList(parsedSpecs);
         } else if (DEFAULT_CATEGORY_SPECS[detectedCategory]) {
           setSpecList(DEFAULT_CATEGORY_SPECS[detectedCategory]);
-        }
-
-        // Preset matching image if available
-        const matchedCategory = detectedCategory;
-        if (SAMPLE_PRESETS[matchedCategory]?.[0]?.image) {
-          setUploadedImages([SAMPLE_PRESETS[matchedCategory][0].image]);
-          setSelectedPrimaryImageIndex(0);
         }
 
         setAiSearchPrompt('');
@@ -497,47 +476,6 @@ export default function SellerProducts({ isAddMode = false }) {
               >
                 <Check size={16} /> Submit & Publish Product
               </button>
-            </div>
-          </div>
-
-          {/* Quick Preset Templates Bar */}
-          <div
-            style={{
-              backgroundColor: '#EFF6FF',
-              borderRadius: '12px',
-              border: '1px solid #BFDBFE',
-              padding: '12px 16px',
-              marginBottom: '20px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              gap: '10px'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: '700', color: '#1D4ED8' }}>
-              <Sparkles size={16} /> Quick Template Presets:
-            </div>
-            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              {Object.entries(SAMPLE_PRESETS).flatMap(([_, list]) => list).map((preset, pIdx) => (
-                <button
-                  key={pIdx}
-                  type="button"
-                  onClick={() => handleApplyPreset(preset)}
-                  style={{
-                    padding: '4px 10px',
-                    borderRadius: '6px',
-                    border: '1px solid #93C5FD',
-                    backgroundColor: '#FFFFFF',
-                    color: '#1E40AF',
-                    fontSize: '11.5px',
-                    fontWeight: '700',
-                    cursor: 'pointer'
-                  }}
-                >
-                  + {preset.brand} {preset.title.split(' ')[1]} (₹{preset.price.toLocaleString('en-IN')})
-                </button>
-              ))}
             </div>
           </div>
 

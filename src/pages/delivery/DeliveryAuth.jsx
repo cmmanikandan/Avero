@@ -332,58 +332,6 @@ export default function DeliveryAuth() {
                   >
                     Enter Delivery Dashboard <ArrowRight size={17} />
                   </button>
-
-                  {/* 1-Click Demo Logins */}
-                  <div style={{ marginTop: '14px', borderTop: '1px solid #E2E8F0', paddingTop: '16px' }}>
-                    <div style={{ fontSize: '11px', color: '#64748B', fontWeight: '800', textTransform: 'uppercase', marginBottom: '10px', textAlign: 'center', letterSpacing: '0.5px' }}>
-                      Instant Quick Test Logins
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      <button
-                        type="button"
-                        onClick={() => handleQuickLogin('+91 98450 12345')}
-                        style={{
-                          padding: '10px 12px',
-                          borderRadius: '8px',
-                          border: '1px solid #A7F3D0',
-                          backgroundColor: '#ECFDF5',
-                          color: '#065F46',
-                          fontSize: '12px',
-                          fontWeight: '700',
-                          cursor: 'pointer',
-                          textAlign: 'left',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between'
-                        }}
-                      >
-                        <span>✓ Login as <strong>Suresh Kumar</strong> (Approved Agent)</span>
-                        <span style={{ fontSize: '10px', backgroundColor: '#059669', color: '#FFFFFF', padding: '2px 6px', borderRadius: '4px' }}>Active</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => handleQuickLogin('+91 98940 76543')}
-                        style={{
-                          padding: '10px 12px',
-                          borderRadius: '8px',
-                          border: '1px solid #FDE68A',
-                          backgroundColor: '#FFFBEB',
-                          color: '#92400E',
-                          fontSize: '12px',
-                          fontWeight: '700',
-                          cursor: 'pointer',
-                          textAlign: 'left',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between'
-                        }}
-                      >
-                        <span>⏳ Test <strong>Manikandan V</strong> (Pending Admin Approval)</span>
-                        <span style={{ fontSize: '10px', backgroundColor: '#D97706', color: '#FFFFFF', padding: '2px 6px', borderRadius: '4px' }}>Pending</span>
-                      </button>
-                    </div>
-                  </div>
                 </form>
               ) : (
                 /* Registration Form */

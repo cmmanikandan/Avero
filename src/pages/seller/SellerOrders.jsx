@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { MOCK_SELLER } from '../../data/mockSellers';
 import { useApp } from '../../context/AppContext';
 import {
   ShoppingBag,

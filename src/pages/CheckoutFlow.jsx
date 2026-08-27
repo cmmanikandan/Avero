@@ -177,14 +177,16 @@ export default function CheckoutFlow() {
     }
     if (paymentMethod === 'CARD') {
       if (!cardDetails.number || cardDetails.number.replace(/\s/g, '').length < 16) {
-        // Pre-fill demo card if empty for rapid testing
-        setCardDetails(prev => ({
-          ...prev,
-          number: prev.number || '4242 4242 4242 4242',
-          expiry: prev.expiry || '12/28',
-          cvv: prev.cvv || '888',
-          name: prev.name || user?.name || 'Avero Member'
-        }));
+        showToast('Please enter a valid 16-digit Debit/Credit Card Number', 'error');
+        return;
+      }
+      if (!cardDetails.expiry || cardDetails.expiry.length < 5) {
+        showToast('Please enter a valid expiry date (MM/YY)', 'error');
+        return;
+      }
+      if (!cardDetails.cvv || cardDetails.cvv.length < 3) {
+        showToast('Please enter a valid CVV', 'error');
+        return;
       }
     }
     setIsConfirmModalOpen(true);

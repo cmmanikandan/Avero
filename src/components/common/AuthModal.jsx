@@ -212,7 +212,9 @@ export default function AuthModal() {
                       width: '100%',
                       padding: '11px 14px 11px 38px',
                       borderRadius: 'var(--radius-md)',
-                      border: '1px solid var(--border-subtle)',
+                      border: '1.5px solid var(--border-subtle)',
+                      backgroundColor: '#FFFFFF',
+                      color: 'var(--text-primary)',
                       fontSize: '13px',
                       outline: 'none'
                     }}
@@ -246,7 +248,9 @@ export default function AuthModal() {
                       width: '100%',
                       padding: '11px 38px 11px 38px',
                       borderRadius: 'var(--radius-md)',
-                      border: '1px solid var(--border-subtle)',
+                      border: '1.5px solid var(--border-subtle)',
+                      backgroundColor: '#FFFFFF',
+                      color: 'var(--text-primary)',
                       fontSize: '13px',
                       outline: 'none'
                     }}
@@ -372,7 +376,15 @@ export default function AuthModal() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
-                        style={{ width: '100%', padding: '10px 14px 10px 38px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)', fontSize: '13px' }}
+                        style={{
+                          width: '100%',
+                          padding: '11px 14px 11px 38px',
+                          borderRadius: 'var(--radius-md)',
+                          border: '1.5px solid var(--border-subtle)',
+                          backgroundColor: '#FFFFFF',
+                          color: 'var(--text-primary)',
+                          fontSize: '13px'
+                        }}
                       />
                     </div>
                   </div>

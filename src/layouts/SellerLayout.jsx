@@ -130,7 +130,7 @@ export default function SellerLayout({ children }) {
     );
   }
 
-  const storeDisplayName = user?.storeName || (user?.isAuth ? `${user.name}'s Store` : MOCK_SELLER.storeName);
+  const storeDisplayName = user?.storeName || (user?.name ? `${user.name}'s Store` : 'Merchant Store');
   const storeSlug = storeDisplayName.toLowerCase().replace(/\s+/g, '-');
 
   return (

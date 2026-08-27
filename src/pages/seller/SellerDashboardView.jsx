@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { MOCK_SELLER } from '../../data/mockSellers';
 import { useApp } from '../../context/AppContext';
 import {
   IndianRupee,

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { MOCK_SELLER } from '../../data/mockSellers';
 import { useApp } from '../../context/AppContext';
 import {
   Store,
@@ -23,69 +22,69 @@ import {
 export default function SellerSettings() {
   const { user, setUser, showToast } = useApp();
 
-  // Load from registration storage or user context or fallback to mock
+  // Load from registration storage or user context
   const [storeData, setStoreData] = useState(() => {
     try {
       const savedRegistration = JSON.parse(localStorage.getItem('avero_seller_profile') || '{}');
       const savedUser = JSON.parse(localStorage.getItem('avero_seller') || '{}');
       return {
-        storeName: savedRegistration.storeName || savedUser.storeName || user?.storeName || MOCK_SELLER.storeName,
-        legalEntityName: savedRegistration.legalEntityName || savedUser.legalEntityName || user?.legalEntityName || MOCK_SELLER.sellerName,
-        signatoryName: savedRegistration.signatoryName || user?.name || 'Authorized Signatory',
-        businessEmail: savedRegistration.businessEmail || savedUser.email || user?.email || MOCK_SELLER.email,
-        businessPhone: savedRegistration.businessPhone || savedUser.phone || user?.phone || MOCK_SELLER.phone,
-        businessType: savedRegistration.businessType || 'Private Limited Company (Pvt Ltd)',
+        storeName: savedRegistration.storeName || savedUser.storeName || user?.storeName || (user?.name ? `${user.name}'s Store` : ''),
+        legalEntityName: savedRegistration.legalEntityName || savedUser.legalEntityName || user?.legalEntityName || user?.name || '',
+        signatoryName: savedRegistration.signatoryName || user?.name || '',
+        businessEmail: savedRegistration.businessEmail || savedUser.email || user?.email || '',
+        businessPhone: savedRegistration.businessPhone || savedUser.phone || user?.phone || '',
+        businessType: savedRegistration.businessType || 'Proprietorship',
         category: savedRegistration.category || 'electronics',
-        merchantId: savedRegistration.merchantId || user?.merchantId || MOCK_SELLER.id,
+        merchantId: savedRegistration.merchantId || user?.merchantId || (user?.id ? `SELLER-${user.id.slice(0, 8).toUpperCase()}` : ''),
         
         // GST & Tax
-        gstin: savedRegistration.gstin || user?.gstin || MOCK_SELLER.gstin,
-        panNumber: savedRegistration.panNumber || user?.panNumber || MOCK_SELLER.panNumber,
-        tradeLicense: savedRegistration.tradeLicense || 'TL-2026-KA-99124',
+        gstin: savedRegistration.gstin || user?.gstin || '',
+        panNumber: savedRegistration.panNumber || user?.panNumber || '',
+        tradeLicense: savedRegistration.tradeLicense || '',
         
         // Bank Details
-        bankName: savedRegistration.bankName || 'HDFC Bank',
-        accountHolder: savedRegistration.accountHolder || savedRegistration.legalEntityName || MOCK_SELLER.sellerName,
-        accountNumber: savedRegistration.accountNumber || '50100293847581',
-        ifscCode: savedRegistration.ifscCode || 'HDFC0001234',
-        upiId: savedRegistration.upiId || 'avero.merchant@okhdfcbank',
+        bankName: savedRegistration.bankName || '',
+        accountHolder: savedRegistration.accountHolder || savedRegistration.legalEntityName || user?.name || '',
+        accountNumber: savedRegistration.accountNumber || '',
+        ifscCode: savedRegistration.ifscCode || '',
+        upiId: savedRegistration.upiId || '',
         
         // Pickup Address
-        building: savedRegistration.building || 'Tech Hub Tower B, 4th Floor',
-        street: savedRegistration.street || 'Outer Ring Road, Bellandur',
-        city: savedRegistration.city || 'Bengaluru',
-        state: savedRegistration.state || 'Karnataka',
-        pincode: savedRegistration.pincode || '560103',
+        building: savedRegistration.building || '',
+        street: savedRegistration.street || '',
+        city: savedRegistration.city || '',
+        state: savedRegistration.state || '',
+        pincode: savedRegistration.pincode || '',
 
         // Store Policies
-        returnWindowDays: 7,
-        freeDeliveryThreshold: 499,
-        autoAcceptOrders: true,
-        notificationsEnabled: true
+        returnWindowDays: savedRegistration.returnWindowDays || 7,
+        freeDeliveryThreshold: savedRegistration.freeDeliveryThreshold || 499,
+        autoAcceptOrders: savedRegistration.autoAcceptOrders !== undefined ? savedRegistration.autoAcceptOrders : true,
+        notificationsEnabled: savedRegistration.notificationsEnabled !== undefined ? savedRegistration.notificationsEnabled : true
       };
     } catch (_) {
       return {
-        storeName: MOCK_SELLER.storeName,
-        legalEntityName: MOCK_SELLER.sellerName,
-        signatoryName: 'Authorized Signatory',
-        businessEmail: MOCK_SELLER.email,
-        businessPhone: MOCK_SELLER.phone,
-        businessType: 'Private Limited Company (Pvt Ltd)',
+        storeName: user?.storeName || (user?.name ? `${user.name}'s Store` : ''),
+        legalEntityName: user?.legalEntityName || user?.name || '',
+        signatoryName: user?.name || '',
+        businessEmail: user?.email || '',
+        businessPhone: user?.phone || '',
+        businessType: 'Proprietorship',
         category: 'electronics',
-        merchantId: MOCK_SELLER.id,
-        gstin: MOCK_SELLER.gstin,
-        panNumber: MOCK_SELLER.panNumber,
-        tradeLicense: 'TL-2026-KA-99124',
-        bankName: 'HDFC Bank',
-        accountHolder: MOCK_SELLER.sellerName,
-        accountNumber: '50100293847581',
-        ifscCode: 'HDFC0001234',
-        upiId: 'avero.merchant@okhdfcbank',
-        building: 'Tech Hub Tower B, 4th Floor',
-        street: 'Outer Ring Road, Bellandur',
-        city: 'Bengaluru',
-        state: 'Karnataka',
-        pincode: '560103',
+        merchantId: user?.merchantId || '',
+        gstin: user?.gstin || '',
+        panNumber: user?.panNumber || '',
+        tradeLicense: '',
+        bankName: '',
+        accountHolder: user?.name || '',
+        accountNumber: '',
+        ifscCode: '',
+        upiId: '',
+        building: '',
+        street: '',
+        city: '',
+        state: '',
+        pincode: '',
         returnWindowDays: 7,
         freeDeliveryThreshold: 499,
         autoAcceptOrders: true,

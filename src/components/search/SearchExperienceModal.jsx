@@ -58,13 +58,6 @@ export default function SearchExperienceModal() {
     'Smartwatches'
   ];
 
-  const sampleVisualItems = [
-    { label: '📱 Mobiles & Computing', query: 'mobiles', img: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&q=80' },
-    { label: '🎧 Audio & Sound', query: 'audio', img: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&q=80' },
-    { label: '👟 Footwear & Fashion', query: 'footwear', img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80' },
-    { label: '💻 Laptops & Gadgets', query: 'laptops', img: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=80' }
-  ];
-
   const handleExecuteSearch = (term) => {
     if (!term || !term.trim()) return;
     // Stop mic before navigating
@@ -540,43 +533,11 @@ export default function SearchExperienceModal() {
               </div>
             )}
 
-            {/* Quick Demo Test Photos */}
-            {!analyzingImage && (
-              <div style={{ marginBottom: '16px' }}>
-                <div style={{ fontSize: '11px', fontWeight: '800', color: '#64748B', textTransform: 'uppercase', marginBottom: '8px' }}>
-                  Or Test with Sample Product Photos:
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                  {sampleVisualItems.map((item) => (
-                    <button
-                      key={item.label}
-                      type="button"
-                      onClick={() => handleProcessVisualSearch(item.img, item.query)}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        padding: '6px 8px',
-                        borderRadius: '10px',
-                        border: '1px solid #E2E8F0',
-                        backgroundColor: '#F8FAFC',
-                        cursor: 'pointer',
-                        textAlign: 'left'
-                      }}
-                    >
-                      <img src={item.img} alt={item.label} style={{ width: '30px', height: '30px', borderRadius: '6px', objectFit: 'cover' }} />
-                      <span style={{ fontSize: '11px', fontWeight: '700', color: '#0F172A' }}>{item.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
             <button
               type="button"
               onClick={() => setIsCameraSearchOpen(false)}
               className="btn btn-secondary"
-              style={{ width: '100%', height: '38px', fontSize: '13px', fontWeight: '700' }}
+              style={{ width: '100%', height: '38px', fontSize: '13px', fontWeight: '700', marginTop: '12px' }}
             >
               Cancel Visual Search
             </button>
