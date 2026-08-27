@@ -44,9 +44,7 @@ export default function MobileHeader() {
   // Shorten location for compact mobile display (Only if logged in)
   const hasLocation = Boolean(pincodeCity && user?.isAuth);
   const compactLocation = hasLocation
-    ? pincodeCity.includes('M.Kumarasamy')
-      ? 'MKCE, Karur'
-      : pincodeCity.split(',')[0]
+    ? pincodeCity.split(',')[0]
     : '';
 
   useEffect(() => {

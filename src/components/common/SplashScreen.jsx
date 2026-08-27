@@ -37,10 +37,15 @@ export default function SplashScreen({ onFinish }) {
     <div
       style={{
         position: 'fixed',
-        inset: 0,
-        zIndex: 999999,
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        width: '100vw',
+        height: '100vh',
+        zIndex: 9999999,
         backgroundColor: '#FFFFFF',
-        background: 'radial-gradient(circle at 50% 32%, rgba(238, 242, 255, 0.95) 0%, rgba(248, 250, 252, 0.98) 50%, #FFFFFF 100%)',
+        background: '#FFFFFF',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',

@@ -137,25 +137,13 @@ export default function ProfileSetupWizardModal({ isOpen, onClose }) {
           showToast(`📍 Detected: ${detectedCity} (${detectedPincode}), ${detectedState}`, 'success');
         } catch (err) {
           console.warn('Geocoding fallback:', err);
-          setFormData((prev) => ({
-            ...prev,
-            pincode: '639117',
-            city: 'Karur',
-            state: 'Tamil Nadu'
-          }));
-          showToast('Location detected (Karur, 639117)', 'success');
+          showToast('Could not resolve GPS details. Please enter your pincode.', 'info');
         } finally {
           setIsDetectingLocation(false);
         }
       },
       (err) => {
         console.warn('Geolocation permission error:', err);
-        setFormData((prev) => ({
-          ...prev,
-          pincode: '639117',
-          city: 'Karur',
-          state: 'Tamil Nadu'
-        }));
         setIsDetectingLocation(false);
         showToast('Please enter your delivery pincode manually', 'info');
       },

@@ -40,7 +40,19 @@ export default function SellerLayout({ children }) {
 
   const isSeller = user.isAuth && (user.role === 'seller' || localStorage.getItem('avero_role') === 'seller');
 
-  const activeStoreName = user?.storeName || (user?.name ? `${user.name}'s Store` : '');
+  const savedSellerProfile = (() => {
+    try {
+      return JSON.parse(localStorage.getItem('avero_seller_profile') || '{}');
+    } catch (_) {
+      return {};
+    }
+  })();
+
+  const activeStoreName = user?.storeName || savedSellerProfile.storeName || (user?.name ? `${user.name}'s Store` : 'Seller Hub');
+  const activeStoreLogo = user?.storeLogo || user?.avatar || savedSellerProfile.storeLogo || savedSellerProfile.avatar || '';
+  const storeDisplayName = activeStoreName;
+  const storeSlug = activeStoreName.toLowerCase().replace(/\s+/g, '-');
+
   const sellerOrders = orders.filter(o => 
     o.items?.some(it => 
       (activeStoreName && (it.seller === activeStoreName || it.brand === activeStoreName || it.seller?.name === activeStoreName)) ||
@@ -130,9 +142,6 @@ export default function SellerLayout({ children }) {
     );
   }
 
-  const storeDisplayName = user?.storeName || (user?.name ? `${user.name}'s Store` : 'Merchant Store');
-  const storeSlug = storeDisplayName.toLowerCase().replace(/\s+/g, '-');
-
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#F1F5F9' }}>
       
@@ -184,7 +193,17 @@ export default function SellerLayout({ children }) {
           alignItems: 'center',
           gap: '12px'
         }}>
-          <UserAvatar user={user} size={42} fontSize={16} border="2px solid #334155" />
+          <UserAvatar
+            user={{
+              name: storeDisplayName,
+              email: user?.email,
+              avatar: activeStoreLogo,
+              photoURL: activeStoreLogo
+            }}
+            size={42}
+            fontSize={16}
+            border="2px solid #334155"
+          />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: '13.5px', fontWeight: '800', color: '#F8FAFC', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {storeDisplayName}
@@ -414,7 +433,17 @@ export default function SellerLayout({ children }) {
             {/* Drawer Header */}
             <div style={{ padding: '18px 16px', borderBottom: '1px solid #1E293B', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <UserAvatar user={user} size={36} fontSize={14} border="2px solid #334155" />
+                <UserAvatar
+                  user={{
+                    name: storeDisplayName,
+                    email: user?.email,
+                    avatar: activeStoreLogo,
+                    photoURL: activeStoreLogo
+                  }}
+                  size={36}
+                  fontSize={14}
+                  border="2px solid #334155"
+                />
                 <div>
                   <div style={{ fontSize: '13.5px', fontWeight: '800', color: '#FFFFFF' }}>{storeDisplayName}</div>
                   <div style={{ fontSize: '10px', color: '#10B981', fontWeight: '800' }}>✓ Verified Seller</div>

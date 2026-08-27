@@ -236,70 +236,43 @@ export default function AddressModal({ initialData = null, onClose }) {
           const data = await res.json();
           const addr = data.address || {};
 
-          const detectedPincode = addr.postcode ? addr.postcode.replace(/\D/g, '').slice(0, 6) : '639113';
-          const detectedState = addr.state || 'Tamil Nadu';
-          const detectedDistrict = addr.state_district || addr.county || addr.city || 'Karur';
-          const detectedCity = addr.city || addr.town || addr.county || 'Karur';
-          const amenityName = addr.amenity || addr.college || addr.university || addr.building || addr.office || '';
+          const detectedPincode = addr.postcode ? addr.postcode.replace(/\D/g, '').slice(0, 6) : '';
+          const detectedState = addr.state || '';
+          const detectedDistrict = addr.state_district || addr.county || addr.city || '';
+          const detectedCity = addr.city || addr.town || addr.village || addr.county || '';
+          const amenityName = addr.amenity || addr.building || addr.office || '';
 
           let roadName = addr.road || addr.pedestrian || addr.footway || '';
-          if (roadName.includes('Varanasi - Kanniyakumari') || roadName.includes('NH7')) {
-            roadName = 'NH 44 (Salem - Karur Highway)';
-          }
-
-          const locality = addr.suburb || addr.neighbourhood || addr.village || addr.hamlet || addr.residential || 'Thalavapalayam';
+          const locality = addr.suburb || addr.neighbourhood || addr.village || addr.hamlet || addr.residential || '';
 
           let formattedArea = '';
           if (roadName && locality && !roadName.includes(locality)) {
             formattedArea = `${roadName}, ${locality}`;
           } else {
-            formattedArea = roadName || locality || 'NH 44, Thalavapalayam';
+            formattedArea = roadName || locality || detectedCity || '';
           }
 
-          let formattedFlat = amenityName || (addr.house_number ? `No. ${addr.house_number}` : '');
-          if (!formattedFlat && (data.display_name?.includes('Kumarasamy') || locality.includes('Thalavapalayam') || detectedPincode === '639113')) {
-            formattedFlat = 'M.Kumarasamy College of Engineering (MKCE)';
-          }
+          let formattedFlat = amenityName || (addr.house_number ? `Door No. ${addr.house_number}` : '');
 
           setFormData((prev) => ({
             ...prev,
-            district: detectedDistrict,
-            state: detectedState,
-            pincode: detectedPincode,
-            city: detectedCity,
-            area: formattedArea,
-            flat: formattedFlat || prev.flat || 'Campus / Main Block',
-            landmark: amenityName ? `Near ${amenityName}` : (prev.landmark || 'Near MKCE Campus')
+            district: detectedDistrict || prev.district,
+            state: detectedState || prev.state,
+            pincode: detectedPincode || prev.pincode,
+            city: detectedCity || prev.city,
+            area: formattedArea || prev.area,
+            flat: formattedFlat || prev.flat,
+            landmark: amenityName ? `Near ${amenityName}` : (locality ? `Near ${locality}` : prev.landmark)
           }));
-          showToast('Live district, state, pincode and street populated!', 'success');
+          showToast(`📍 Location detected: ${detectedCity || detectedDistrict || 'Current Area'} (${detectedPincode || ''})`, 'success');
         } catch (err) {
           console.warn('Geocoding fallback:', err);
-          setFormData((prev) => ({
-            ...prev,
-            district: 'Karur',
-            state: 'Tamil Nadu',
-            pincode: '639113',
-            city: 'Karur',
-            area: 'NH 44, Thalavapalayam',
-            flat: 'M.Kumarasamy College of Engineering',
-            landmark: 'Near MKCE Campus'
-          }));
-          showToast('Location populated from GPS', 'info');
+          showToast('Could not resolve full address details. Please fill in your address.', 'info');
         }
       },
       (err) => {
         console.warn('GPS error:', err);
-        setFormData((prev) => ({
-          ...prev,
-          district: 'Karur',
-          state: 'Tamil Nadu',
-          pincode: '639113',
-          city: 'Karur',
-          area: 'NH 44, Thalavapalayam',
-          flat: 'M.Kumarasamy College of Engineering',
-          landmark: 'Near MKCE Campus'
-        }));
-        showToast('Location populated from GPS', 'info');
+        showToast('Please enter your delivery address manually.', 'info');
       },
       { timeout: 10000, enableHighAccuracy: true }
     );
@@ -453,7 +426,7 @@ export default function AddressModal({ initialData = null, onClose }) {
             </label>
             <input
               type="text"
-              placeholder="e.g. M.Kumarasamy College of Engineering (MKCE) / Flat 402"
+              placeholder="e.g. Flat 402, Green Valley Apartments / House No. 12"
               value={formData.flat}
               onChange={(e) => setFormData({ ...formData, flat: e.target.value })}
               style={{
@@ -475,7 +448,7 @@ export default function AddressModal({ initialData = null, onClose }) {
             </label>
             <input
               type="text"
-              placeholder="e.g. NH 44, Thalavapalayam / Main Road"
+              placeholder="e.g. Main Street, Sector 4 / Central Avenue"
               value={formData.area}
               onChange={(e) => setFormData({ ...formData, area: e.target.value })}
               style={{
@@ -497,7 +470,7 @@ export default function AddressModal({ initialData = null, onClose }) {
             </label>
             <input
               type="text"
-              placeholder="e.g. Near MKCE Campus / Next to Bank"
+              placeholder="e.g. Near City Park / Opposite Bus Station"
               value={formData.landmark}
               onChange={(e) => setFormData({ ...formData, landmark: e.target.value })}
               style={{

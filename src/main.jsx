@@ -5,8 +5,8 @@ import { AppProvider } from './context/AppContext';
 import App from './App';
 import './styles/index.css';
 
-// Register PWA Service Worker for offline shell and lightning fast caching
-if ('serviceWorker' in navigator && !window.location.host.includes('localhost:5173')) {
+// Register PWA Service Worker for standalone installability & fast offline caching
+if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker
       .register('/sw.js')

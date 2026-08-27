@@ -38,9 +38,10 @@ export default function BecomeSellerPage() {
   const [formData, setFormData] = useState({
     // Step 1: Business Info
     storeName: '',
+    storeLogo: user?.avatar || user?.photoURL || '',
     legalEntityName: '',
     businessEmail: user?.email || '',
-    businessPhone: '',
+    businessPhone: user?.phone || '',
     category: 'electronics',
     businessType: 'Sole Proprietorship',
 
@@ -70,6 +71,29 @@ export default function BecomeSellerPage() {
     counterfeitDeclaration: true,
     signatoryName: user?.name || ''
   });
+
+  const [isUploadingLogo, setIsUploadingLogo] = useState(false);
+
+  const handleLogoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingLogo(true);
+    showToast('Uploading Brand DP to Cloudinary...', 'info');
+
+    try {
+      const { uploadToCloudinary } = await import('../../services/cloudinaryService');
+      const res = await uploadToCloudinary(file);
+      if (res?.secureUrl) {
+        setFormData((prev) => ({ ...prev, storeLogo: res.secureUrl }));
+        showToast('Store Brand DP uploaded successfully!', 'success');
+      }
+    } catch (err) {
+      showToast(err.message || 'Failed to upload store logo', 'error');
+    } finally {
+      setIsUploadingLogo(false);
+    }
+  };
 
   const [errors, setErrors] = useState({});
 
@@ -195,22 +219,37 @@ export default function BecomeSellerPage() {
       setIsVerifying(false);
       setIsApproved(true);
 
-      const sellerProfile = {
+      const fullProfile = {
+        ...formData,
         isAuth: true,
         name: formData.signatoryName || formData.storeName,
         email: formData.businessEmail,
+        phone: formData.businessPhone,
         role: 'seller',
         storeName: formData.storeName,
+        legalEntityName: formData.legalEntityName,
         merchantId: generatedMid,
         businessType: formData.businessType,
         gstin: formData.gstin.toUpperCase(),
+        panNumber: formData.panNumber.toUpperCase(),
         pincode: formData.pincode,
         category: formData.category,
-        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(formData.storeName)}&background=F59E0B&color=fff`,
+        avatar: formData.storeLogo || `https://ui-avatars.com/api/?name=${encodeURIComponent(formData.storeName)}&background=F59E0B&color=fff`,
+        storeLogo: formData.storeLogo,
         emailVerified: true
       };
 
-      // Provision Live Brand Storefront
+      // 1. Save detailed seller registration profile
+      localStorage.setItem('avero_seller_profile', JSON.stringify(fullProfile));
+
+      // 2. Save active seller user and session
+      setUser(fullProfile);
+      localStorage.setItem('avero_user', JSON.stringify(fullProfile));
+      localStorage.setItem('avero_role', 'seller');
+      localStorage.setItem('avero_seller', JSON.stringify(fullProfile));
+      setActiveRole('seller');
+
+      // 3. Provision Live Brand Storefront
       try {
         const existingStores = JSON.parse(localStorage.getItem('avero_brand_stores') || '[]');
         const newStore = {
@@ -223,18 +262,39 @@ export default function BecomeSellerPage() {
           verified: true,
           gstin: formData.gstin.toUpperCase(),
           tagline: `${formData.category.charAt(0).toUpperCase() + formData.category.slice(1)} Boutique`,
-          description: `Official ${formData.storeName} storefront on Avero. Certified genuine products with direct manufacturer warranty.`
+          description: `Official ${formData.storeName} storefront on Avero. Certified genuine products with direct manufacturer warranty.`,
+          avatar: formData.storeLogo
         };
         const updatedStores = existingStores.filter(s => s.name.toLowerCase() !== formData.storeName.toLowerCase());
         updatedStores.unshift(newStore);
         localStorage.setItem('avero_brand_stores', JSON.stringify(updatedStores));
       } catch (_) {}
 
-      setUser(sellerProfile);
-      localStorage.setItem('avero_user', JSON.stringify(sellerProfile));
-      localStorage.setItem('avero_role', 'seller');
-      localStorage.setItem('avero_seller', JSON.stringify(sellerProfile));
-      setActiveRole('seller');
+      // 4. Sync with Supabase
+      try {
+        import('../../services/supabase').then(({ supabaseService }) => {
+          supabaseService.registerSeller({
+            storeName: formData.storeName,
+            ownerName: formData.signatoryName || formData.storeName,
+            email: formData.businessEmail,
+            phone: formData.businessPhone,
+            businessType: formData.businessType,
+            gstin: formData.gstin.toUpperCase(),
+            pan: formData.panNumber.toUpperCase(),
+            pickupAddress: {
+              building: formData.building,
+              street: formData.street,
+              city: formData.city,
+              state: formData.state,
+              pincode: formData.pincode
+            },
+            accountNumber: formData.accountNumber,
+            ifscCode: formData.ifscCode,
+            bankName: formData.bankName,
+            status: 'approved'
+          }).catch(e => console.warn('[Supabase] Seller sync notice:', e.message));
+        });
+      } catch (_) {}
 
       showToast('🎉 Seller verification approved! Welcome to Avero Seller Central.', 'success');
     }, 2700);
@@ -487,6 +547,62 @@ export default function BecomeSellerPage() {
                     <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '4px' }}>
                       Enter your public customer-facing store name and registered legal details.
                     </p>
+                  </div>
+                  {/* Brand Store DP / Logo Upload */}
+                  <div style={{
+                    backgroundColor: '#F8FAFC',
+                    border: '1.5px dashed #CBD5E1',
+                    borderRadius: '12px',
+                    padding: '16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '16px',
+                    flexWrap: 'wrap'
+                  }}>
+                    <div style={{ position: 'relative', width: '64px', height: '64px', borderRadius: '16px', overflow: 'hidden', backgroundColor: '#FFFFFF', border: '2px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      {formData.storeLogo ? (
+                        <img src={formData.storeLogo} alt="Store DP" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      ) : (
+                        <Store size={28} color="#94A3B8" />
+                      )}
+                    </div>
+
+                    <div style={{ flex: 1, minWidth: '200px' }}>
+                      <div style={{ fontSize: '13px', fontWeight: '800', color: '#0F172A' }}>
+                        Store Brand Logo / Profile Picture
+                      </div>
+                      <div style={{ fontSize: '11.5px', color: '#64748B', marginTop: '2px' }}>
+                        Visible to all buyers on your brand storefront & product pages.
+                      </div>
+                      <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
+                        <label
+                          htmlFor="seller-logo-upload"
+                          style={{
+                            padding: '6px 12px',
+                            backgroundColor: '#FFFFFF',
+                            border: '1px solid #CBD5E1',
+                            borderRadius: '8px',
+                            fontSize: '12px',
+                            fontWeight: '700',
+                            color: '#334155',
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                          }}
+                        >
+                          {isUploadingLogo ? 'Uploading...' : 'Upload Brand DP'}
+                        </label>
+                        <input
+                          id="seller-logo-upload"
+                          type="file"
+                          accept="image/*"
+                          onChange={handleLogoUpload}
+                          disabled={isUploadingLogo}
+                          style={{ display: 'none' }}
+                        />
+                      </div>
+                    </div>
                   </div>
 
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>

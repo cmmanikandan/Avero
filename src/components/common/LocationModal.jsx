@@ -60,16 +60,14 @@ export default function LocationModal() {
           setIsLocationSelectorOpen(false);
         } catch (err) {
           console.warn('Geocoding fallback:', err);
-          changePincode('639113', 'MKCE, Karur');
+          showToast('Could not resolve GPS location. Please choose your pincode.', 'info');
           setIsDetectingLocation(false);
-          setIsLocationSelectorOpen(false);
         }
       },
       (err) => {
         console.warn('Geolocation permission error:', err);
-        changePincode('639113', 'MKCE, Karur');
+        showToast('Please enter your delivery pincode manually.', 'info');
         setIsDetectingLocation(false);
-        setIsLocationSelectorOpen(false);
       },
       { timeout: 10000, enableHighAccuracy: true }
     );

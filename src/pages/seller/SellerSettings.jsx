@@ -29,6 +29,7 @@ export default function SellerSettings() {
       const savedUser = JSON.parse(localStorage.getItem('avero_seller') || '{}');
       return {
         storeName: savedRegistration.storeName || savedUser.storeName || user?.storeName || (user?.name ? `${user.name}'s Store` : ''),
+        storeLogo: savedRegistration.storeLogo || savedUser.storeLogo || savedUser.avatar || user?.storeLogo || user?.avatar || '',
         legalEntityName: savedRegistration.legalEntityName || savedUser.legalEntityName || user?.legalEntityName || user?.name || '',
         signatoryName: savedRegistration.signatoryName || user?.name || '',
         businessEmail: savedRegistration.businessEmail || savedUser.email || user?.email || '',
@@ -94,6 +95,28 @@ export default function SellerSettings() {
   });
 
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploadingLogo, setIsUploadingLogo] = useState(false);
+
+  const handleLogoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingLogo(true);
+    showToast('Uploading Brand Logo to Cloudinary...', 'info');
+
+    try {
+      const { uploadToCloudinary } = await import('../../services/cloudinaryService');
+      const res = await uploadToCloudinary(file);
+      if (res?.secureUrl) {
+        setStoreData((prev) => ({ ...prev, storeLogo: res.secureUrl }));
+        showToast('Store Logo uploaded! Click "Save Store Profile" to persist.', 'success');
+      }
+    } catch (err) {
+      showToast(err.message || 'Failed to upload logo', 'error');
+    } finally {
+      setIsUploadingLogo(false);
+    }
+  };
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -106,6 +129,9 @@ export default function SellerSettings() {
       const updatedUser = {
         ...(user || {}),
         storeName: storeData.storeName,
+        storeLogo: storeData.storeLogo,
+        avatar: storeData.storeLogo || user?.avatar,
+        photoURL: storeData.storeLogo || user?.photoURL,
         legalEntityName: storeData.legalEntityName,
         gstin: storeData.gstin,
         panNumber: storeData.panNumber,
@@ -122,13 +148,13 @@ export default function SellerSettings() {
       const existingStores = JSON.parse(localStorage.getItem('avero_brand_stores') || '[]');
       const updatedStores = existingStores.map(s => {
         if (s.name.toLowerCase() === storeData.storeName.toLowerCase() || s.id === storeData.merchantId) {
-          return { ...s, name: storeData.storeName, gstin: storeData.gstin, category: storeData.category };
+          return { ...s, name: storeData.storeName, gstin: storeData.gstin, category: storeData.category, avatar: storeData.storeLogo };
         }
         return s;
       });
       localStorage.setItem('avero_brand_stores', JSON.stringify(updatedStores));
 
-      showToast('🎉 All Store profile, GSTIN & Settlement Bank details saved successfully!', 'success');
+      showToast('🎉 Store profile, Brand DP, GSTIN & Settlement Bank details saved successfully!', 'success');
     } catch (err) {
       showToast('Failed to save settings', 'error');
     } finally {
@@ -157,17 +183,23 @@ export default function SellerSettings() {
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
           <div style={{
-            width: '52px',
-            height: '52px',
-            borderRadius: '14px',
+            width: '56px',
+            height: '56px',
+            borderRadius: '16px',
             background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
             color: '#FFFFFF',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)'
+            boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)',
+            overflow: 'hidden',
+            flexShrink: 0
           }}>
-            <Store size={28} />
+            {storeData.storeLogo ? (
+              <img src={storeData.storeLogo} alt="Store Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              <Store size={28} />
+            )}
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -215,8 +247,66 @@ export default function SellerSettings() {
           boxShadow: '0 1px 3px rgba(0,0,0,0.02)'
         }}>
           <h2 style={{ fontSize: '15.5px', fontWeight: '800', color: '#0F172A', margin: '0 0 16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Store size={18} color="#2563EB" /> 1. Store Identity & Merchant Information
+            <Store size={18} color="#2563EB" /> 1. Store Identity & Brand Profile
           </h2>
+
+          {/* Brand DP / Logo Upload Row */}
+          <div style={{
+            backgroundColor: '#F8FAFC',
+            border: '1.5px dashed #CBD5E1',
+            borderRadius: '12px',
+            padding: '16px',
+            marginBottom: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px',
+            flexWrap: 'wrap'
+          }}>
+            <div style={{ width: '64px', height: '64px', borderRadius: '16px', overflow: 'hidden', backgroundColor: '#FFFFFF', border: '2px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              {storeData.storeLogo ? (
+                <img src={storeData.storeLogo} alt="Store DP" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              ) : (
+                <Store size={28} color="#94A3B8" />
+              )}
+            </div>
+
+            <div style={{ flex: 1, minWidth: '200px' }}>
+              <div style={{ fontSize: '13px', fontWeight: '800', color: '#0F172A' }}>
+                Store Brand Logo / Display Picture (DP)
+              </div>
+              <div style={{ fontSize: '11.5px', color: '#64748B', marginTop: '2px' }}>
+                Shown on your public storefront, vendor profile, and seller dashboard header.
+              </div>
+              <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
+                <label
+                  htmlFor="settings-logo-upload"
+                  style={{
+                    padding: '6px 14px',
+                    backgroundColor: '#FFFFFF',
+                    border: '1px solid #CBD5E1',
+                    borderRadius: '8px',
+                    fontSize: '12px',
+                    fontWeight: '700',
+                    color: '#334155',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}
+                >
+                  {isUploadingLogo ? 'Uploading to CDN...' : 'Change Brand DP'}
+                </label>
+                <input
+                  id="settings-logo-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleLogoUpload}
+                  disabled={isUploadingLogo}
+                  style={{ display: 'none' }}
+                />
+              </div>
+            </div>
+          </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
             <div>

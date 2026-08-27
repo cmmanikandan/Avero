@@ -558,7 +558,8 @@ export function AppProvider({ children }) {
       '700001': 'BBD Bagh, Kolkata',
       '500081': 'HITEC City, Hyderabad',
       '411001': 'Camp, Pune',
-      '639113': 'MKCE, Karur'
+      '639113': 'Karur',
+      '639117': 'Karur'
     };
     const finalCity = customCityName || pinMap[code] || (code ? `Pincode ${code}` : '');
     setPincodeCity(finalCity);

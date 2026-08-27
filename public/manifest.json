@@ -1,15 +1,14 @@
 {
-  "id": "avero-marketplace-pwa",
+  "id": "/",
   "name": "Avero - India's Premier Online Marketplace",
   "short_name": "Avero",
   "description": "Explore genuine electronics, smartphones, laptops, fashion, beauty and home decor with fast delivery across 26,000+ pincodes.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "orientation": "portrait-primary",
-  "background_color": "#071228",
-  "theme_color": "#1366E2",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FFFFFF",
   "categories": ["shopping", "lifestyle", "business"],
   "lang": "en-IN",
   "dir": "ltr",
@@ -19,19 +18,13 @@
       "src": "/logo.png",
       "type": "image/png",
       "sizes": "192x192",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
       "src": "/logo.png",
       "type": "image/png",
       "sizes": "512x512",
-      "purpose": "any"
-    },
-    {
-      "src": "/logo.png",
-      "type": "image/png",
-      "sizes": "512x512",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
   ],
   "shortcuts": [
